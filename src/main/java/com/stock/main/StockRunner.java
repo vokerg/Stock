@@ -12,10 +12,8 @@ public class StockRunner implements CommandLineRunner{
 
 	@Override
 	public void run(String... arg0) throws Exception {
-		System.out.println("I HAVE STARTED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		Stream.of("Stock1", "Stock2", "Stock3").forEach(stockName -> stockRepository.save(new Stock(stockName)));
-		stockRepository.findAll().stream().forEach(stock -> System.out.println(stock.getName()));
-		
+		stockRepository.findAll().stream().forEach(stock -> System.out.println(stock.getName()));		
 	}
 
 	public StockRunner(StockRepository stockRepository) {
