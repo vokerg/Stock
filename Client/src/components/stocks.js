@@ -1,4 +1,5 @@
 import React from 'react';
+import { getStocks } from '../api';
 
 class Stocks extends React.Component {
 
@@ -10,19 +11,7 @@ class Stocks extends React.Component {
   }
 
   componentDidMount() {
-    fetch('/stocks/active')
-      .then(response => response.json())
-      .then(stocks => this.setState({stocks}))
-    this.setState({
-      stocks:[{
-          id:1,
-          name:"stock1"
-      },
-      {
-        id:2,
-        name:"stock2"
-      }]
-    });
+    getStocks(stocks => this.setState({stocks}));
   }
 
   render() {
