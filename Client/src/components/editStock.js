@@ -1,10 +1,11 @@
 import React from 'react';
-import { insertStocks } from '../api';
+import { insertStock, updateStock, getStock } from '../api';
 
 class EditStock extends React.Component {
   constructor() {
     super();
     this.state = {
+      id: 0,
       name:""
     };
   }
@@ -15,9 +16,21 @@ class EditStock extends React.Component {
     })
   }
 
+  componentDidMount() {
+      const {id} = this.props.match.params;
+      if (id !== undefined) {
+        getStock(id)(stock => this.setState({...stock}));
+      }
+  }
+
   submit = event => {
     event.preventDefault();
-    insertStocks({name:this.state.name})(() => console.log("added"));
+    const {id} = this.props.match.params;
+    if (id !== undefined) {
+      updateStock({...this.state})(() => console.log("updated"));
+    } else {
+      insertStock({name:this.state.name})(() => console.log("added"));
+    }
   }
 
   render() {

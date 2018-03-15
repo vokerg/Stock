@@ -1,5 +1,6 @@
 import React from 'react';
 import { getStocks } from '../api';
+import { Link } from 'react-router-dom'
 
 class Stocks extends React.Component {
 
@@ -22,7 +23,7 @@ class Stocks extends React.Component {
             {this.state.stocks.map((stock, key) =>
               <tr key ={key}>
                 <td>{stock.id}</td>
-                <td>{stock.name}</td>
+                <td><Link to={`/stocks/${stock.id}`}>{stock.name}</Link></td>
               </tr>
             )}
           </tbody>

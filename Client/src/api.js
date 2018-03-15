@@ -3,7 +3,12 @@ export const getStocks = next =>
     .then(response => response.json())
     .then(stocks => next(stocks));
 
-export const insertStocks = stock => next =>
+export const getStock = id => next =>
+  fetch(`/stocks/${id}`)
+    .then(response => response.json())
+    .then(stock => next(stock));
+
+export const insertStock = stock => next =>
   fetch('/stocks/',
     {
       method: 'put',
@@ -15,3 +20,16 @@ export const insertStocks = stock => next =>
     }
   )
   .then(response => next(response));
+
+  export const updateStock = stock => next =>
+    fetch(`/stocks/${stock.id}`,
+      {
+        method: 'post',
+        body: JSON.stringify(stock),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    .then(response => next(response));
