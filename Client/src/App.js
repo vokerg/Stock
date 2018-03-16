@@ -4,6 +4,7 @@ import logo from './logo.svg';
 import Stocks from './components/stocks';
 import EditStock from './components/editStock';
 import Stock from './components/stock';
+import Navigator from './components/navigator'
 import './App.css';
 
 class App extends Component {
@@ -12,10 +13,13 @@ class App extends Component {
       <div className="App">
         <BrowserRouter>
           <div>
-            <Route exact path="/" component= {Stocks} />
-            <Route exact path="/createstock" component= {EditStock} />
-            <Route exact path="/stocks/:id" component= {Stock} />
-            <Route exact path="/stocks/:id/edit" component= {EditStock} />
+            <Navigator />
+            <div>
+              <Route exact path="/" component= {Stocks} />
+              <Route exact path="/createstock" component= {EditStock} />
+              <Route exact path="/stocks/:id" component= {Stock} />
+              <Route exact path="/stocks/:id/edit" component= {EditStock} />
+            </div>
           </div>
         </BrowserRouter>
       </div>
