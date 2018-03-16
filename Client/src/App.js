@@ -4,6 +4,7 @@ import logo from './logo.svg';
 import Stocks from './components/stocks';
 import EditStock from './components/editStock';
 import Stock from './components/stock';
+import Products from './components/products';
 import Navigator from './components/navigator'
 import './App.css';
 
@@ -16,6 +17,8 @@ class App extends Component {
             <Navigator />
             <div>
               <Route exact path="/" component= {Stocks} />
+              <Route exact path="/stocks" component= {Stocks} />
+              <Route exact path="/products" component= {Products} />
               <Route exact path="/createstock" component= {EditStock} />
               <Route exact path="/stocks/:id" component= {Stock} />
               <Route exact path="/stocks/:id/edit" component= {EditStock} />

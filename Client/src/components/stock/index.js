@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { getStock, getStockRest } from '../api';
+import { getStock, getStockRests } from '../../api';
 import StockView from './stockView';
 import StockRests from './stockRest';
 
@@ -21,16 +20,18 @@ class Stock extends React.Component {
         this.setState({
           ...stock,
           stockRests
-        });
-      );
+        })
+      )
     );
   }
 
   render() {
     const {id} = this.props.match.params;
     return (
-      <StockView id={id} name={this.state.name} />
-      <StockRest stockRests={thi.state.stockRests}/>
+      <div>
+        <StockView id={id} name={this.state.name} />
+        <StockRests stockRests={this.state.stockRests}/>
+      </div>
     )
   }
 }

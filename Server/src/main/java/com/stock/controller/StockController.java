@@ -1,4 +1,4 @@
-package com.stock.main;
+package com.stock.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,18 +12,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stock.entity.Stock;
+import com.stock.entity.StockRest;
+import com.stock.repository.StockRepository;
+import com.stock.repository.StockRestRepository;
+
 @RestController
 @RequestMapping(value = "/stocks")
 public class StockController {
 	private StockRepository stockRepository;
+	private StockRestRepository stockRestRepository;
 	
-	public StockController(StockRepository stockRepository) {
+	public StockController(StockRepository stockRepository, StockRestRepository stockRestRepository) {
 		super();
 		this.stockRepository = stockRepository;
+		this.stockRestRepository = stockRestRepository;
 	}
 	
-	@GetMapping("/")
+	@GetMapping("")
 	public List<Stock> allStocks() {
+		System.out.println("reaching this point");
 		return this.stockRepository.findAll();
 	}
 	
@@ -37,6 +45,11 @@ public class StockController {
 			@PathVariable
 			String id) {
 		return this.stockRepository.findById(Long.valueOf(id));
+	}
+	
+	@GetMapping("/{id}/stockrest")
+	public List<StockRest> getStockRest(@PathVariable String id) {
+		return this.stockRestRepository.findByStock(this.stockRepository.findById(Long.valueOf(id)));
 	}
 	
 	@PutMapping("/")

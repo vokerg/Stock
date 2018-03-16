@@ -5,7 +5,7 @@ const Navigator = () => {
   return (
     <div>
       <span><Link to="/stocks">Stocks</Link></span>
-      <span><Link to="/materials">Materials</Link></span>
+      <span><Link to="/products">Products</Link></span>
       <span><Link to="/orders">Orders</Link></span>
     </div>
   )

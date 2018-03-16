@@ -4,10 +4,10 @@ const StockRest = ({stockRests}) => {
   return (
     <table>
       <tbody>
-        {stockRests.map(stockRest => {
+        {stockRests.map((stockRest, key) => {
           return (
-            <tr>
-              <td>{stockRest.material}</td>
+            <tr key={key}>
+              <td>{stockRest.product.name}</td>
               <td>{stockRest.qty}</td>
             </tr>
           )
