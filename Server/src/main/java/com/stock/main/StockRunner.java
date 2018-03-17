@@ -12,7 +12,7 @@ import com.stock.repository.ProductRepository;
 import com.stock.repository.StockRepository;
 import com.stock.repository.StockRestRepository;
 
-@Component
+//@Component
 public class StockRunner implements CommandLineRunner{
 	
 	private StockRepository stockRepository;
@@ -45,6 +45,7 @@ public class StockRunner implements CommandLineRunner{
 		System.out.println(stockRest);
 		
 		System.out.println(this.stockRestRepository.findByStock(this.stockRepository.findById(Long.valueOf("1"))));
+		
 	}
 
 	public StockRunner(StockRepository stockRepository, ProductRepository productRepository, StockRestRepository stockRestRepository) {
