@@ -1,5 +1,5 @@
 import React from 'react';
-import { getStocks } from '../api';
+import { getStocks } from '../api/stockApi';
 import { Link } from 'react-router-dom'
 
 class Stocks extends React.Component {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { insertStock, updateStock, getStock } from '../api';
+import { insertStock, updateStock, getStock } from '../api/stockApi';
 
 class EditStock extends React.Component {
   constructor() {

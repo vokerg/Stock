@@ -1,5 +1,5 @@
 import React from 'react';
-import { getStock, getStockRests } from '../../api';
+import { getStock, getStockRests } from '../../api/stockApi';
 import StockView from './stockView';
 import StockRests from './stockRest';
 
