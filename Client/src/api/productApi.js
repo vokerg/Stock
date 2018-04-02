@@ -1,4 +1,4 @@
 export const getProducts = next =>
-  fetch('/products/')
+  fetch('/stock/products/')
     .then(response => response.json())
     .then(stocks => next(stocks));
