@@ -1,4 +1,4 @@
-package com.stock.OrderProcessor;
+package com.stock.order;
 
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Queue;
@@ -22,7 +22,12 @@ public class RabbitConfiguration {
 	}
 	
 	@Bean
-	public Queue orderAddedQueue() {
-		return new Queue("orderAddedQueue");
+	public Queue myQueue1() {
+		return new Queue("queue1");
 	}
+
+	@Bean
+	public Queue myQueue2() {
+		return new Queue("queue2");
+	}	
 }

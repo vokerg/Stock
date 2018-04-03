@@ -31,7 +31,6 @@ public class StockController {
 	
 	@GetMapping("")
 	public List<Stock> allStocks() {
-		System.out.println("reaching this point");
 		return this.stockRepository.findAll();
 	}
 	

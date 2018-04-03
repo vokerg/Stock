@@ -28,4 +28,8 @@ public class OrderDaoImpl implements OrderDao{
 					return order;
 				});
 	}
+	
+	public void addOrder(Order order) {
+		
+	}
 }

@@ -6,4 +6,5 @@ import com.stock.order.model.Order;
 
 public interface OrderDao {
 	public List<Order> getAllOrders();
+	public void addOrder(Order order);
 }
