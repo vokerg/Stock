@@ -3,18 +3,18 @@ package com.stock.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.stock.dao.OrderDao;
-import com.stock.model.Order;
+import com.stock.model.StockOrder;
+import com.stock.repository.OrderRepository;
 
 @Component
 public class OrderServiceImpl implements OrderService{
 	@Autowired
-	OrderDao orderDao;
+	OrderRepository orderRepository;
 	
 	@Override
 	public void processOrder(String id) {
-		Order order = orderDao.getOrderById(id);
+		StockOrder order = orderRepository.findById(Long.valueOf(id));
 		order.setOperationTypeId(20);
-		orderDao.saveOrder(order);
+		orderRepository.save(order);
 	}
 }

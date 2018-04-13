@@ -1,4 +1,4 @@
-package com.stock.OrderProcessor;
+package com.stock.orderProcessor;
 
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

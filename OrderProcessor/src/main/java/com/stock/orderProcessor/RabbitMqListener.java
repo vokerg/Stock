@@ -1,4 +1,4 @@
-package com.stock.OrderProcessor;
+package com.stock.orderProcessor;
 
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

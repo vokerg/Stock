@@ -6,12 +6,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Order {
+public class StockOrder {
 	@Id
 	private Long id;
 	private Date date;
-	private int stockId;
-	private int productId;
+	private int stockId1;
+	private Integer productId;
 	private int stockId2;
 	private float qty;
 	private int operationTypeId;
@@ -28,16 +28,16 @@ public class Order {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public int getStockId() {
-		return stockId;
+	public int getStockId1() {
+		return stockId1;
 	}
-	public void setStockId(int stockId) {
-		this.stockId = stockId;
+	public void setStockId1(int stockId1) {
+		this.stockId1 = stockId1;
 	}
-	public int getProductId() {
+	public Integer getProductId() {
 		return productId;
 	}
-	public void setProductId(int productId) {
+	public void setProductId(Integer productId) {
 		this.productId = productId;
 	}
 	public int getStockId2() {
