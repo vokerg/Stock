@@ -22,12 +22,7 @@ public class RabbitConfiguration {
 	}
 	
 	@Bean
-	public Queue myQueue1() {
-		return new Queue("queue1");
-	}
-
-	@Bean
-	public Queue myQueue2() {
-		return new Queue("queue2");
+	public Queue orderAddedQueue() {
+		return new Queue("orderAddedQueue");
 	}	
 }

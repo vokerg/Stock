@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@ComponentScan
+@ComponentScan( basePackages = {"com.stock.service", "com.stock.dao", "com.stock.OrderProcessor"} )
 @EnableDiscoveryClient
 @Import(RabbitConfiguration.class)
 public class OrderProcessorApplication {

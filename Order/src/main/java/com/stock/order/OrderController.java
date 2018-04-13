@@ -32,9 +32,9 @@ public class OrderController {
 		return orderDao.getAllOrders();
 	}
 	
-	@PutMapping("/")
+	@PutMapping("")
 	public void addOrder(@RequestBody Order order) {
-		orderDao.addOrder(order);
-		template.convertAndSend("orderAddedQueue", order.getId());
+		int orderId = orderDao.addOrder(order);
+		template.convertAndSend("orderAddedQueue", orderId);
 	}
 }
