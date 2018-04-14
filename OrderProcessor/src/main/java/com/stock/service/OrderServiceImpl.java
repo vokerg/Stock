@@ -27,13 +27,21 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	private void updateStockRest(StockRest stockRest, int operationTypeId, float qty) {
-		// TODO Auto-generated method stub
-		
+		//More complicated logic should be implemented
+		stockRest.setQty(stockRest.getQty() + qty);
+		stockRestRepository.save(stockRest);
 	}
 
 	private StockRest getStockRest(Integer productId, int stockId1) {
-		// TODO Auto-generated method stub
-		return null;
+		StockRest stockRest = stockRestRepository.findByProductIdAndStockId(productId, stockId1);
+		if (stockRest != null) {
+			return stockRest;
+		}
+		stockRest = new StockRest();
+		stockRest.setProductId(productId);
+		stockRest.setStockId(stockId1);
+		stockRest.setQty(0);
+		return stockRestRepository.save(stockRest);
 	}
 
 	private void updateOrderToProcessed(StockOrder order) {
