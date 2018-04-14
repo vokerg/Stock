@@ -13,6 +13,7 @@ public class Order {
 	private String stockName;
 	private String stock2Name;
 	private String productName;
+	private Integer statusId;
 	
 	public int getId() {
 		return id;
@@ -73,5 +74,11 @@ public class Order {
 	}
 	public void setProductName(String productName) {
 		this.productName = productName;
+	}
+	public Integer getStatusId() {
+		return statusId;
+	}
+	public void setStatusId(Integer statusId) {
+		this.statusId = statusId;
 	}
 }

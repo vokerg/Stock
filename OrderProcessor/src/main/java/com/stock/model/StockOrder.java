@@ -15,6 +15,7 @@ public class StockOrder {
 	private int stockId2;
 	private float qty;
 	private int operationTypeId;
+	private Integer statusId;
 	
 	public Long getId() {
 		return id;
@@ -57,6 +58,12 @@ public class StockOrder {
 	}
 	public void setOperationTypeId(int operationTypeId) {
 		this.operationTypeId = operationTypeId;
+	}
+	public Integer getStatusId() {
+		return statusId;
+	}
+	public void setStatusId(Integer statusId) {
+		this.statusId = statusId;
 	}
 
 }

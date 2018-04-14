@@ -14,16 +14,18 @@ import org.springframework.stereotype.Component;
 import com.stock.order.model.Order;
 
 @Component
-public class OrderDaoImpl implements OrderDao{
+public class OrderDaoImpl implements OrderDao {
 
-	private static final String INSERT_STOCK_ORDER = "insert into stock_order (date, stock_id1, stock_id2, qty, operation_type_id, product_id) values (?, ?, ?, ?, ?, ?)";
+	private static final String SELECT_ALL_ORDERS = "select id, date, stock_id1, stock_id2, product_id, qty, operation_type_id, status_id from stock_order";
+	private static final String INSERT_STOCK_ORDER = "insert into stock_order (date, stock_id1, stock_id2, qty, operation_type_id, product_id, status_id) values (?, ?, ?, ?, ?, ?, ?)";
+	private static final int STATUS_NEW = 0;
 	
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 	
 	@Override
 	public List<Order> getAllOrders() {
-		return jdbcTemplate.query ("select id, date, stock_id1, stock_id2, product_id, qty, operation_type_id from stock_order", 
+		return jdbcTemplate.query (SELECT_ALL_ORDERS, 
 				(rs, rownNum) -> {
 					Order order = new Order();
 					order.setId(rs.getInt("id"));
@@ -33,6 +35,7 @@ public class OrderDaoImpl implements OrderDao{
 					order.setQty(rs.getInt("qty"));
 					order.setProductId(rs.getInt("product_id"));
 					order.setOperationTypeId(rs.getInt("operation_type_id"));
+					order.setStatusId(rs.getInt("status_id"));
 					return order;
 				});
 	}
@@ -48,6 +51,7 @@ public class OrderDaoImpl implements OrderDao{
 			statement.setFloat(4, order.getQty());
 			statement.setInt(5, order.getOperationTypeId());
 			statement.setInt(6, order.getProductId());
+			statement.setInt(7, STATUS_NEW);
 			return statement;
 		}, keyHolder);
 		return (int) keyHolder.getKeys().get("id");
