@@ -22,24 +22,8 @@ public class OrderDaoImpl implements OrderDao {
 	
 	@Autowired
 	JdbcTemplate jdbcTemplate;
-	
+
 	@Override
-	public List<Order> getAllOrders() {
-		return jdbcTemplate.query (SELECT_ALL_ORDERS, 
-				(rs, rownNum) -> {
-					Order order = new Order();
-					order.setId(rs.getInt("id"));
-					order.setDate(rs.getDate("date"));
-					order.setStockId(rs.getInt("stock_id1"));
-					order.setStockId2(rs.getInt("stock_id2"));
-					order.setQty(rs.getInt("qty"));
-					order.setProductId(rs.getInt("product_id"));
-					order.setOperationTypeId(rs.getInt("operation_type_id"));
-					order.setStatusId(rs.getInt("status_id"));
-					return order;
-				});
-	}
-	
 	public int addOrder(Order order) {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(connection -> {
@@ -55,5 +39,41 @@ public class OrderDaoImpl implements OrderDao {
 			return statement;
 		}, keyHolder);
 		return (int) keyHolder.getKeys().get("id");
+	}
+	
+	private List<Order> getOrders(String sql) {
+		return jdbcTemplate.query (SELECT_ALL_ORDERS, 
+				(rs, rownNum) -> {
+					Order order = new Order();
+					order.setId(rs.getInt("id"));
+					order.setDate(rs.getDate("date"));
+					order.setStockId(rs.getInt("stock_id1"));
+					order.setStockId2(rs.getInt("stock_id2"));
+					order.setQty(rs.getInt("qty"));
+					order.setProductId(rs.getInt("product_id"));
+					order.setOperationTypeId(rs.getInt("operation_type_id"));
+					order.setStatusId(rs.getInt("status_id"));
+					return order;
+				});
+	}
+	
+	@Override
+	public List<Order> getAllOrders() {
+		return getOrders(SELECT_ALL_ORDERS);
+	}
+	
+	@Override
+	public List<Order> getOrdersByProductIdAndStockId(String productId, String stockId) {
+		return getOrders(SELECT_ALL_ORDERS + " where product_id = " + productId + " and stock_id = " + stockId);
+	}
+
+	@Override
+	public List<Order> getOrdersByProductId(String productId) {
+		return getOrders(SELECT_ALL_ORDERS + " where product_id = " + productId);
+	}
+
+	@Override
+	public List<Order> getOrdersByStock(String stockId) {
+		return getOrders(SELECT_ALL_ORDERS + " where stock_id = " + stockId);
 	}
 }

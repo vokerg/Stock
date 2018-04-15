@@ -2,6 +2,7 @@ import React from 'react';
 import { getStock, getStockRests } from '../../api/stockApi';
 import StockView from './stockView';
 import StockRests from './stockRest';
+import OrdersView from '../common/ordersView';
 
 class Stock extends React.Component {
   constructor() {
@@ -31,6 +32,7 @@ class Stock extends React.Component {
       <div>
         <StockView id={id} name={this.state.name} />
         <StockRests stockRests={this.state.stockRests}/>
+        <OrdersView />
       </div>
     )
   }

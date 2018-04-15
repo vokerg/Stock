@@ -6,6 +6,7 @@ import EditStock from './components/editStock';
 import Stock from './components/stock';
 import Products from './components/products';
 import Navigator from './components/navigator'
+import Orders from './components/orders'
 import './App.css';
 
 class App extends Component {
@@ -19,6 +20,7 @@ class App extends Component {
               <Route exact path="/" component= {Stocks} />
               <Route exact path="/stocks" component= {Stocks} />
               <Route exact path="/products" component= {Products} />
+              <Route exact path="/orders" component= {Orders} />
               <Route exact path="/createstock" component= {EditStock} />
               <Route exact path="/stocks/:id" component= {Stock} />
               <Route exact path="/stocks/:id/edit" component= {EditStock} />

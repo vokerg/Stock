@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stock.order.dao.OrderDao;
@@ -28,7 +29,19 @@ public class OrderController {
 	}
 	
 	@GetMapping("")
-	public List<Order> getOrders() {
+	public List<Order> getOrders(
+			@RequestParam(value = "productId", required = false) String productId,
+			@RequestParam(value = "stockId", required = false) String stockId
+	) {
+		if ((productId != null) && (stockId != null)) {
+			return orderDao.getOrdersByProductIdAndStockId(productId, stockId);
+		}
+		if (productId != null) {
+			return orderDao.getOrdersByProductId(productId);
+		}
+		if (stockId != null) {
+			return orderDao.getOrdersByStock(stockId);
+		}
 		return orderDao.getAllOrders();
 	}
 	
