@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,11 @@ public class OrderController {
 	public OrderController(OrderDao orderDao) {
 		super();
 		this.orderDao = orderDao;
+	}
+	
+	@GetMapping("/{id}")
+	public Order getOrder(@PathVariable String id) {
+		return orderDao.getOrderById(id);
 	}
 	
 	@GetMapping("")

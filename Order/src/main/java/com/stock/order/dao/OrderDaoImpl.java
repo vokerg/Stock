@@ -76,4 +76,10 @@ public class OrderDaoImpl implements OrderDao {
 	public List<Order> getOrdersByStock(String stockId) {
 		return getOrders(SELECT_ALL_ORDERS + " where stock_id = " + stockId);
 	}
+
+	@Override
+	public Order getOrderById(String id) {
+		List<Order> orders = getOrders(SELECT_ALL_ORDERS + " where id=" + id);
+		return (orders.size() > 0) ? orders.get(0) : null;
+	}
 }
