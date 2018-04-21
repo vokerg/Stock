@@ -1,4 +1,4 @@
-package com.stock.ZoolProject;
+package com.stock.ZuulProject;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,9 +11,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableZuulProxy
 @EnableDiscoveryClient
 @EnableSwagger2
-public class ZoolProjectApplication {
+public class ZuulProjectApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ZoolProjectApplication.class, args);
+		SpringApplication.run(ZuulProjectApplication.class, args);
 	}
 }
