@@ -1,4 +1,4 @@
-package com.stock.auth.stockAuth;
+package com.stock.auth.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -7,17 +7,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import static java.util.Collections.emptyList;
+import com.stock.auth.service.StockUserDetailService;
 
 @Configuration
 @EnableWebSecurity
 public class AuthConfiguration extends WebSecurityConfigurerAdapter {
+	
+	@Autowired
+	StockUserDetailService stockUserDetailService;
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -33,11 +32,6 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(new UserDetailsService() {
-			@Override
-			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-				return new User("guest", bCryptPasswordEncoder.encode("guest"), emptyList());
-			}	
-		}).passwordEncoder(bCryptPasswordEncoder);
+		auth.userDetailsService(stockUserDetailService).passwordEncoder(bCryptPasswordEncoder);
 	}
 }

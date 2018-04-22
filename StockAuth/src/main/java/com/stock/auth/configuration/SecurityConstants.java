@@ -1,4 +1,4 @@
-package com.stock.auth.stockAuth;
+package com.stock.auth.configuration;
 
 public class SecurityConstants {
 	public static final String SECRET = "SecretKeyToGenJWTs";

@@ -1,4 +1,4 @@
-package com.stock.auth.stockAuth;
+package com.stock.auth.configuration;
 
 import java.io.IOException;
 import java.util.Date;

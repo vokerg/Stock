@@ -1,10 +1,12 @@
-package com.stock.auth.stockAuth;
+package com.stock.auth.model;
 
-public class ApplicationUser {
-	public long getId() {
+import org.springframework.data.annotation.Id;
+
+public class User {
+	public String getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getUsername() {
@@ -19,7 +21,9 @@ public class ApplicationUser {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	private long id;
+	
+	@Id
+	private String id;
 	private String username;
 	private String password;
 }
