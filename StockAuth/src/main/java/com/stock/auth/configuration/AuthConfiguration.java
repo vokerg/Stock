@@ -23,7 +23,11 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {		
-		http.csrf().disable().authorizeRequests().antMatchers("/**").permitAll()
+		http.csrf().disable()
+		.authorizeRequests()
+		//.antMatchers("/**").permitAll()
+		.antMatchers("/tests/**").permitAll()
+		.antMatchers("/authorize/**").authenticated()
 		.and()
 		.addFilter(new JwtAuthenticationFilter(authenticationManager()))
 		.addFilter(new JwtAuthorizationFIlter(authenticationManager()))

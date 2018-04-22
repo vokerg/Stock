@@ -23,7 +23,6 @@ public class TestController {
 		} else {
 			return "unauthorized from controller";
 		}
-		
 	}
 
 }

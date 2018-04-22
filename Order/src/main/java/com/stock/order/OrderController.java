@@ -2,15 +2,25 @@ package com.stock.order;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import com.stock.order.dao.OrderDao;
 import com.stock.order.model.Order;
@@ -24,6 +34,9 @@ public class OrderController {
 	@Autowired
 	AmqpTemplate template;
 	
+	@Autowired
+	RestTemplate restTemplate;
+	
 	public OrderController(OrderDao orderDao) {
 		super();
 		this.orderDao = orderDao;
@@ -31,6 +44,26 @@ public class OrderController {
 	
 	@GetMapping("/{id}")
 	public Order getOrder(@PathVariable String id) {
+		return orderDao.getOrderById(id);
+	}
+	
+	@GetMapping("/authorized/{id}")
+	public Order getOrderAuthorizedTest(
+			@PathVariable String id, 
+			@RequestHeader("Authorization") String token, 
+			HttpServletResponse response) {
+		//example of calling authorize logic. Should be replaced with interceptors
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", token);
+		HttpEntity<String> entityReq = new HttpEntity<String>("", headers);
+		ResponseEntity<Object> obj = null;
+		try {
+			obj = restTemplate.exchange("http://localhost:8093/authorize", HttpMethod.GET, entityReq, Object.class);	
+		} catch (HttpClientErrorException e) {
+			response.setStatus(e.getStatusCode().value());
+			return null;
+		}
+		
 		return orderDao.getOrderById(id);
 	}
 	
