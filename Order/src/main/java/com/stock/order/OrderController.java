@@ -2,7 +2,6 @@ package com.stock.order;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.amqp.core.AmqpTemplate;
