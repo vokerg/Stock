@@ -15,35 +15,38 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import com.stock.auth.model.AuthorizedUser;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 
-public class JwtAuthorizationFIlter extends BasicAuthenticationFilter{
+public class JwtAuthorizationFIlter extends BasicAuthenticationFilter {
 
 	public JwtAuthorizationFIlter(AuthenticationManager authenticationManager) {
 		super(authenticationManager);
 	}
-	
+
 	@Override
-	protected void doFilterInternal(HttpServletRequest request,
-			HttpServletResponse response, FilterChain chain)
-					throws IOException, ServletException {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
 		String header = request.getHeader(SecurityConstants.HEADER_STRING);
 		if ((header != null) && (header.startsWith(SecurityConstants.TOKEN_PREFIX))) {
 			String token = header.replace(SecurityConstants.TOKEN_PREFIX, "");
 			if (token != null) {
 				try {
-					String user = Jwts.parser()
-							.setSigningKey(SecurityConstants.SECRET.getBytes())
-							.parseClaimsJws(token)
-							.getBody()
-							.getSubject();
-						Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, new ArrayList<GrantedAuthority>());
-						SecurityContextHolder.getContext().setAuthentication(authentication);	
-				} catch(JwtException e) {
+					Claims claims = Jwts.parser().setSigningKey(SecurityConstants.SECRET.getBytes())
+							.parseClaimsJws(token).getBody();
+					String username = (String) claims.get("username");
+					String idUser = (String) claims.get("idUser");
+
+					Authentication authentication = new UsernamePasswordAuthenticationToken(
+							new AuthorizedUser(idUser, username), null, new ArrayList<GrantedAuthority>());
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+				} catch (JwtException e) {
 					request.setAttribute("exception", e);
-	                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				}	
+					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				}
 			}
 		}
 		chain.doFilter(request, response);

@@ -8,7 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,16 +21,15 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-
 public class AuthorizationFilter extends BasicAuthenticationFilter{
 
 	public static final String HEADER_STRING = "Authorization";
 	
-	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 	
-	public AuthorizationFilter(AuthenticationManager authenticationManager) {
+	public AuthorizationFilter(AuthenticationManager authenticationManager, RestTemplate restTemplate) {
 		super(authenticationManager);
+		this.restTemplate = restTemplate;
 	}
 	
 	@Override
@@ -49,21 +47,18 @@ public class AuthorizationFilter extends BasicAuthenticationFilter{
 		headers.set("Authorization", header);
 		HttpEntity<String> entityReq = new HttpEntity<String>("", headers);
 		ResponseEntity<Object> obj = null;
+
 		try {
-			obj = restTemplate.exchange("http://localhost:8093/authorize", HttpMethod.GET, entityReq, Object.class);	
+			obj = restTemplate.exchange("http://STOCK-AUTH/authorize", HttpMethod.GET, entityReq, Object.class);	
 		} catch (HttpClientErrorException e) {
 			//response.setStatus(e.getStatusCode().value());
 			chain.doFilter(request, response);
 			return;
 		}
 		
-		System.out.println(obj);
+		Authentication authentication = new UsernamePasswordAuthenticationToken(obj, null, new ArrayList<GrantedAuthority>());
 		
-		Authentication authentication = new UsernamePasswordAuthenticationToken("user1", null, new ArrayList<GrantedAuthority>());
-		
-		
-		
-		//SecurityContextHolder.getContext().setAuthentication(authentication);	
+		SecurityContextHolder.getContext().setAuthentication(authentication);	
 		chain.doFilter(request, response);
 	}
 
