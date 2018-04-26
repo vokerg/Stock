@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.stock.auth</groupId>
-	<artifactId>stockAuth</artifactId>
+	<artifactId>StockAuth</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>stockAuth</name>
-	<description>Demo project for Spring Boot</description>
+	<name>Stock Auth</name>
+	<description>Signup, authentication and authorization API for Stock</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
