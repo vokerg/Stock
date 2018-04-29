@@ -26,10 +26,15 @@ class EditStock extends React.Component {
   submit = event => {
     event.preventDefault();
     const {id} = this.props.match.params;
+    const {push} = this.props.history;
     if (id !== undefined) {
-      updateStock({...this.state})(() => console.log("updated"));
+      updateStock({...this.state})(
+        () => push(`/stocks/${id}`)
+      );
     } else {
-      insertStock({name:this.state.name})(() => console.log("added"));
+      insertStock({name:this.state.name})(
+        stock => push(`/stocks/${stock.id}`)
+      );
     }
   }
 

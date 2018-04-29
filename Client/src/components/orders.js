@@ -1,11 +1,11 @@
 import React from 'react';
 import OrdersView from './common/ordersView'
 
-const Orders = () => {
+const Orders = ({history}) => {
   return (
     <div>
       <div>Filter</div>
-      <OrdersView/>
+      <OrdersView redirectUnauthorized={() => history.push('/login')}/>
     </div>
   )
 };

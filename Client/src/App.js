@@ -8,6 +8,7 @@ import Products from './components/products';
 import Navigator from './components/navigator';
 import Orders from './components/orders';
 import Login from './components/login';
+import Logout from './components/logout';
 import './App.css';
 
 class App extends Component {
@@ -26,6 +27,7 @@ class App extends Component {
               <Route exact path="/stocks/:id" component= {Stock} />
               <Route exact path="/stocks/:id/edit" component= {EditStock} />
               <Route exact path="/login" component= {Login} />
+              <Route exact path="/logout" component= {Logout} />
             </div>
           </div>
         </BrowserRouter>

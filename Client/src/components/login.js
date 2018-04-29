@@ -19,7 +19,10 @@ class Login extends React.Component {
 
   onSubmit = event => {
     event.preventDefault();
-    login(this.state.username, this.state.password)((token) => console.log(token))
+    login(this.state.username, this.state.password)((token) => {
+        localStorage.setItem('authorization', token)
+        this.props.history.push("/")
+    })
   }
 
   render() {

@@ -16,7 +16,8 @@ class OrdersView extends React.Component {
     if (stockId === undefined) {
       getOrders(orders => this.setState({
         orders
-      }));
+      }))
+      .catch(error => this.props.redirectUnauthorized());
     } else {
 
     }

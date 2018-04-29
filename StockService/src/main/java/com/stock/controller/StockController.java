@@ -67,8 +67,9 @@ public class StockController {
 	}
 	
 	@PutMapping("/")
-	public void addStock(@RequestBody Stock stock) {
+	public Stock addStock(@RequestBody Stock stock) {
 		stockRepository.save(stock);
+		return stock;
 	}
 	
 	@PostMapping("/{id}")

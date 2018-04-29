@@ -21,8 +21,8 @@ public class AutorizationConfiguration extends WebSecurityConfigurerAdapter{
 				
 		http.csrf().disable()
 		.authorizeRequests()
-		.antMatchers("/**").permitAll()
-		//.antMatchers("/orders/**").authenticated()
+		//.antMatchers("/**").permitAll()
+		.antMatchers("/orders/**").authenticated()
 		.antMatchers("/stocks/**").permitAll()
 		//.antMatchers("/authorize/**").authenticated()
 		.and()
