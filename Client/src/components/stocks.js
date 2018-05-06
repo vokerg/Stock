@@ -18,6 +18,7 @@ class Stocks extends React.Component {
   render() {
     return (
       <div>
+        <div><Link to={'/createstock'}>New stock</Link></div>
         <table>
           <tbody>
             {this.state.stocks.map((stock, key) =>

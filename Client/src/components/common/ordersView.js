@@ -24,7 +24,6 @@ class OrdersView extends React.Component {
   }
 
   render() {
-    console.log("orders", this.state.orders)
     return (
       <div>
         orders view

@@ -4,4 +4,4 @@ export const login = (username, password) => next =>
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }})
-    .then(response => next(response.headers.get('authorization')));
+    .then(response => next(response.headers.get('authorization'), response.status));

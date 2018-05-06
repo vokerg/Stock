@@ -6,7 +6,8 @@ class Login extends React.Component {
     super();
     this.state = {
       username:"",
-      password:""
+      password:"",
+      errorMessage:""
     };
   }
 
@@ -19,9 +20,13 @@ class Login extends React.Component {
 
   onSubmit = event => {
     event.preventDefault();
-    login(this.state.username, this.state.password)((token) => {
+    login(this.state.username, this.state.password)((token, status) => {
+      if (status === 200) {
         localStorage.setItem('authorization', token)
         this.props.history.push("/")
+      } else {
+        this.setState({errorMessage: "Incorrect username or passowrd"})
+      }
     })
   }
 
@@ -29,6 +34,7 @@ class Login extends React.Component {
     return (
       <div>
         <form onSubmit={this.onSubmit.bind(this)}>
+          <div>{this.state.errorMessage}</div>
           <div>
             Username: <input type="text" name="username" value={this.state.username} onChange={this.onChange.bind(this)}/>
           </div>

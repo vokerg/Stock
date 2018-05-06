@@ -1,7 +1,7 @@
 import React from 'react';
-import { getStock, getStockRests } from '../../api/stockApi';
-import StockView from './stockView';
-import StockRests from './stockRest';
+import { getProduct, getProductRests } from '../../api/productApi';
+import ProductView from './productView';
+import ProductRests from './productRest';
 import OrdersView from '../common/ordersView';
 
 class Stock extends React.Component {
@@ -10,17 +10,17 @@ class Stock extends React.Component {
     this.state = {
       id: 0,
       name: "",
-      stockRests: []
+      productRests: []
     };
   }
 
   componentDidMount() {
     const {id} = this.props.match.params;
-    getStock(id)(stock =>
-      getStockRests(id)(stockRests =>
+    getProduct(id)(product =>
+      getProductRests(id)(productRests =>
         this.setState({
-          ...stock,
-          stockRests
+          ...product,
+          productRests
         })
       )
     );
@@ -29,10 +29,11 @@ class Stock extends React.Component {
   render() {
     const {id} = this.props.match.params;
     const {history} = this.props;
+    console.log(this.state)
     return (
       <div>
-        <StockView id={id} name={this.state.name} />
-        <StockRests stockRests={this.state.stockRests}/>
+        <ProductView id={id} name={this.state.name} />
+        <ProductRests stockRests={this.state.productRests}/>
         <OrdersView redirectUnauthorized={() => history.push('/login')}/>
       </div>
     )

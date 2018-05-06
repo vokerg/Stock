@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 import { getProducts } from '../api/productApi';
 
 class Products extends React.Component {
@@ -23,7 +24,7 @@ class Products extends React.Component {
         <tbody>
           {this.state.products.map((product, key) =>
             <tr key={key}>
-              <td>{product.name}</td>
+              <td><Link to={`/products/${product.id}`}>{product.name}</Link></td>
             </tr>
           )}
         </tbody>

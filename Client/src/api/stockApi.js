@@ -1,4 +1,4 @@
-import { authorization } from './token.js'
+import { authorization } from './token.js';
 
 export const getStocks = next =>
   fetch('/stock/stocks/')
