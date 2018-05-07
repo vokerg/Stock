@@ -22,6 +22,9 @@ public class OrderDaoImpl implements OrderDao {
 	
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+	
+	@Autowired
+	OperationTypeDao operationTypeDao;
 
 	@Override
 	public int addOrder(Order order) {
@@ -53,6 +56,7 @@ public class OrderDaoImpl implements OrderDao {
 					order.setProductId(rs.getInt("product_id"));
 					order.setOperationTypeId(rs.getInt("operation_type_id"));
 					order.setStatusId(rs.getInt("status_id"));
+					order.setOperationTypeName(operationTypeDao.getOperationTypeName(rs.getInt("operation_type_id")));
 					return order;
 				});
 	}

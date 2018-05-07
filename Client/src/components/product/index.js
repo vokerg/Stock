@@ -4,7 +4,7 @@ import ProductView from './productView';
 import ProductRests from './productRest';
 import OrdersView from '../common/ordersView';
 
-class Stock extends React.Component {
+class Product extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -40,4 +40,4 @@ class Stock extends React.Component {
   }
 }
 
-export default Stock;
+export default Product;

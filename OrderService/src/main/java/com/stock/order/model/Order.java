@@ -14,6 +14,7 @@ public class Order {
 	private String stock2Name;
 	private String productName;
 	private Integer statusId;
+	private String operationTypeName;
 	
 	public int getId() {
 		return id;
@@ -80,5 +81,11 @@ public class Order {
 	}
 	public void setStatusId(Integer statusId) {
 		this.statusId = statusId;
+	}
+	public String getOperationTypeName() {
+		return operationTypeName;
+	}
+	public void setOperationTypeName(String operationTypeName) {
+		this.operationTypeName = operationTypeName;
 	}
 }

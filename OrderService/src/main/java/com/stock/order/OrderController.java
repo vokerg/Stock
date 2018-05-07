@@ -19,15 +19,11 @@ import com.stock.order.model.Order;
 @RequestMapping(value = "/orders")
 public class OrderController {
 	
+	@Autowired
 	OrderDao orderDao;
 	
 	@Autowired
 	AmqpTemplate template;
-	
-	public OrderController(OrderDao orderDao) {
-		super();
-		this.orderDao = orderDao;
-	}
 	
 	@GetMapping("/{id}")
 	public Order getOrder(@PathVariable String id) {

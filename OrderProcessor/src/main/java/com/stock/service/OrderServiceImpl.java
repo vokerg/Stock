@@ -3,8 +3,10 @@ package com.stock.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.stock.model.OperationType;
 import com.stock.model.StockOrder;
 import com.stock.model.StockRest;
+import com.stock.repository.OperationTypeRepository;
 import com.stock.repository.OrderRepository;
 import com.stock.repository.StockRestRepository;
 
@@ -18,18 +20,27 @@ public class OrderServiceImpl implements OrderService{
 	@Autowired
 	StockRestRepository stockRestRepository;
 	
+	@Autowired
+	OperationTypeRepository operationTypeRepository;
+	
 	@Override
 	public void processOrder(String id) {
 		StockOrder order = getOrder(id);
-		StockRest stockRest = getStockRest(order.getProductId(), order.getStockId1());
-		updateStockRest(stockRest, order.getOperationTypeId(), order.getQty());
+		StockRest stockRest1 = getStockRest(order.getProductId(), order.getStockId1());
+		StockRest stockRest2 = getStockRest(order.getProductId(), order.getStockId2());
+		updateStockRest(stockRest1, stockRest2, order.getOperationTypeId(), order.getQty());
 		updateOrderToProcessed(order);
 	}
 
-	private void updateStockRest(StockRest stockRest, int operationTypeId, float qty) {
-		//More complicated logic should be implemented
-		stockRest.setQty(stockRest.getQty() + qty);
+	private void updateStockRest(StockRest stockRest, StockRest stockRest2, int operationTypeId, float qty) {
+		OperationType op = operationTypeRepository.getById((long) operationTypeId);
+		stockRest.setQty(stockRest.getQty() + qty * op.getSign());
 		stockRestRepository.save(stockRest);
+		if (!op.isfTransfer()) {
+			return;
+		}
+		stockRest2.setQty(stockRest2.getQty() + qty * op.getSign() * (-1));
+		stockRestRepository.save(stockRest2);
 	}
 
 	private StockRest getStockRest(Integer productId, int stockId1) {

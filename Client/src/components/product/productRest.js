@@ -7,7 +7,7 @@ const ProductRest = ({stockRests}) => {
         {stockRests.map((stockRest, key) => {
           return (
             <tr key={key}>
-              <td>{stockRest.product.name}</td>
+              <td>{stockRest.stock.name}</td>
               <td>{stockRest.qty}</td>
             </tr>
           )
