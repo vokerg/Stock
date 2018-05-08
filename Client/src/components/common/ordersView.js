@@ -25,12 +25,17 @@ class OrdersView extends React.Component {
 
   render() {
     return (
-      <div>
-        orders view
+      <table>
+        orders view!
         {this.state.orders.map(order =>
-            <div key={order.id}>{order.id}</div>
+            <tr key={order.id}>
+              <td>{order.productName}</td>
+              <td>{order.stockName}</td>
+              <td>{order.stock2Name}</td>
+              <td>{order.qty}</td>
+            </tr>
         )}
-      </div>
+      </table>
     )
   }
 }

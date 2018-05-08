@@ -16,7 +16,13 @@ import com.stock.order.model.Order;
 @Component
 public class OrderDaoImpl implements OrderDao {
 
-	private static final String SELECT_ALL_ORDERS = "select id, date, stock_id1, stock_id2, product_id, qty, operation_type_id, status_id from stock_order";
+	private static final String SELECT_ALL_ORDERS = "select \n" + 
+			"	so.id, so.date, so.stock_id1, so.stock_id2, so.product_id, so.qty, so.operation_type_id, so.status_id,\n" + 
+			"	p.name as product_name, s1.name as stock1_name, s2.name as stock2_name\n" + 
+			"from stock_order so\n" + 
+			"left join product p on p.id = so.product_id\n" + 
+			"left join stock s1 on s1.id = so.stock_id1\n" + 
+			"left join stock s2 on s2.id = so.stock_id2";
 	private static final String INSERT_STOCK_ORDER = "insert into stock_order (date, stock_id1, stock_id2, qty, operation_type_id, product_id, status_id) values (?, ?, ?, ?, ?, ?, ?)";
 	private static final int STATUS_NEW = 0;
 	
@@ -57,6 +63,9 @@ public class OrderDaoImpl implements OrderDao {
 					order.setOperationTypeId(rs.getInt("operation_type_id"));
 					order.setStatusId(rs.getInt("status_id"));
 					order.setOperationTypeName(operationTypeDao.getOperationTypeName(rs.getInt("operation_type_id")));
+					order.setProductName(rs.getString("product_name"));
+					order.setStockName(rs.getString("stock1_name"));
+					order.setStock2Name(rs.getString("stock2_name"));
 					return order;
 				});
 	}
