@@ -11,6 +11,7 @@ import Login from './components/login';
 import Logout from './components/logout';
 import EditProduct from './components/editProduct';
 import Product from './components/product';
+import EditDocument from './components/editDocument'
 import './App.css';
 
 class App extends Component {
@@ -32,6 +33,7 @@ class App extends Component {
               <Route exact path="/stocks/:id/edit" component= {EditStock} />
               <Route exact path="/login" component= {Login} />
               <Route exact path="/logout" component= {Logout} />
+              <Route exact path="/newdocument" component= {EditDocument} />
             </div>
           </div>
         </BrowserRouter>
