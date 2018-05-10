@@ -1,11 +1,17 @@
 package com.stock.model;
 
 import javax.persistence.Entity;
-
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
 
 @Entity
 public class OperationType {
+	
+	@Id
+	private Long id;
+	private String name;
+	private int sign;
+	private boolean fTransfer;
+	
 	public Long getId() {
 		return id;
 	}
@@ -30,10 +36,4 @@ public class OperationType {
 	public void setfTransfer(boolean fTransfer) {
 		this.fTransfer = fTransfer;
 	}
-	
-	@Id
-	private Long id;
-	private String name;
-	private int sign;
-	private boolean fTransfer;
 }

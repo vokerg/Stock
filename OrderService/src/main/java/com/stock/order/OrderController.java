@@ -49,6 +49,7 @@ public class OrderController {
 	
 	@PutMapping("")
 	public void addOrder(@RequestBody Order order) {
+		System.out.println(order);
 		int orderId = orderDao.addOrder(order);
 		template.convertAndSend("orderAddedQueue", orderId);
 	}

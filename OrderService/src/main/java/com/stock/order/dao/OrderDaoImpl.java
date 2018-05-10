@@ -40,7 +40,11 @@ public class OrderDaoImpl implements OrderDao {
 					Statement.RETURN_GENERATED_KEYS);
 			statement.setDate(1, (Date) order.getDate());
 			statement.setInt(2, order.getStockId());
-			statement.setInt(3, order.getStockId2());
+			if (order.getStockId2() != null) {
+				statement.setInt(3, order.getStockId2());	
+			} else {
+				statement.setNull(3, java.sql.Types.INTEGER);
+			}
 			statement.setFloat(4, order.getQty());
 			statement.setInt(5, order.getOperationTypeId());
 			statement.setInt(6, order.getProductId());
