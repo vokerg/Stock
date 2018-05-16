@@ -58,11 +58,12 @@ class EditDocument extends React.Component {
 
   submitDocument = event => {
     event.preventDefault();
-    this.state.orders.forEach(order => {
+    const {orders, selectedStock, selectedOperationType, transfer} = this.state;
+    orders.forEach(order => {
       insertOrder({
-        stockId: this.state.selectedStock,
-        operationTypeId: this.state.selectedOperationType,
-        stockId2: (this.state.transfer) ? this.state.selectedStock2 : null,
+        stockId: selectedStock,
+        operationTypeId: selectedOperationType,
+        stockId2: (transfer) ? transfer : null,
         productId: order.idProduct,
         qty: order.qty
       })(() => console.log("order added!"))

@@ -23,7 +23,7 @@ public class OrderDaoImpl implements OrderDao {
 			"left join product p on p.id = so.product_id\n" + 
 			"left join stock s1 on s1.id = so.stock_id1\n" + 
 			"left join stock s2 on s2.id = so.stock_id2";
-	private static final String INSERT_STOCK_ORDER = "insert into stock_order (date, stock_id1, stock_id2, qty, operation_type_id, product_id, status_id) values (?, ?, ?, ?, ?, ?, ?)";
+	private static final String INSERT_STOCK_ORDER = "insert into stock_order (date, stock_id1, stock_id2, qty, operation_type_id, product_id, status_id, document_id) values (?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final int STATUS_NEW = 0;
 	
 	@Autowired
@@ -55,7 +55,7 @@ public class OrderDaoImpl implements OrderDao {
 	}
 	
 	private List<Order> getOrders(String sql) {
-		return jdbcTemplate.query (SELECT_ALL_ORDERS, 
+		return jdbcTemplate.query (sql, 
 				(rs, rownNum) -> {
 					Order order = new Order();
 					order.setId(rs.getInt("id"));
@@ -98,5 +98,10 @@ public class OrderDaoImpl implements OrderDao {
 	public Order getOrderById(String id) {
 		List<Order> orders = getOrders(SELECT_ALL_ORDERS + " where id=" + id);
 		return (orders.size() > 0) ? orders.get(0) : null;
+	}
+
+	@Override
+	public List<Order> getOrdersByDoc(int docId) {
+		return getOrders(SELECT_ALL_ORDERS + " where document_id = " + String.valueOf(docId));
 	}
 }

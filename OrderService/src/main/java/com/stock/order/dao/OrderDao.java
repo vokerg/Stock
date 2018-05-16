@@ -10,5 +10,6 @@ public interface OrderDao {
 	public List<Order> getOrdersByProductIdAndStockId(String productId, String stockId);
 	public List<Order> getOrdersByProductId(String productId);
 	public List<Order> getOrdersByStock(String stockId);
+	public List<Order> getOrdersByDoc(int docId);
 	public Order getOrderById(String id);
 }

@@ -1,21 +1,21 @@
 package com.stock.order.model;
 
 import java.util.Date;
+import java.util.List;
 
-public class Order {
+public class OrderDoc {
 	private int id;
 	private Date date;
 	private Integer stockId;
-	private Integer productId;
 	private Integer stockId2;
-	private float qty;
 	private int operationTypeId;
 	private String stockName;
 	private String stock2Name;
-	private String productName;
 	private Integer statusId;
 	private String operationTypeName;
 	private Integer documentId;
+	
+	private List<Order> orders;
 	
 	public int getId() {
 		return id;
@@ -35,23 +35,11 @@ public class Order {
 	public void setStockId(Integer stockId) {
 		this.stockId = stockId;
 	}
-	public Integer getProductId() {
-		return productId;
-	}
-	public void setProductId(Integer productId) {
-		this.productId = productId;
-	}
 	public Integer getStockId2() {
 		return stockId2;
 	}
 	public void setStockId2(Integer stockId2) {
 		this.stockId2 = stockId2;
-	}
-	public float getQty() {
-		return qty;
-	}
-	public void setQty(float qty) {
-		this.qty = qty;
 	}
 	public int getOperationTypeId() {
 		return operationTypeId;
@@ -71,12 +59,6 @@ public class Order {
 	public void setStock2Name(String stock2Name) {
 		this.stock2Name = stock2Name;
 	}
-	public String getProductName() {
-		return productName;
-	}
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
 	public Integer getStatusId() {
 		return statusId;
 	}
@@ -94,5 +76,11 @@ public class Order {
 	}
 	public void setDocumentId(Integer documentId) {
 		this.documentId = documentId;
+	}
+	public List<Order> getOrders() {
+		return orders;
+	}
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
 	}
 }

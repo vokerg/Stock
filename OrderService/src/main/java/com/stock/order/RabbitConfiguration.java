@@ -24,5 +24,10 @@ public class RabbitConfiguration {
 	@Bean
 	public Queue orderAddedQueue() {
 		return new Queue("orderAddedQueue");
-	}	
+	}
+	
+	@Bean
+	public Queue docAddedQueue() {
+		return new Queue("docAddedQueue");
+	}
 }
