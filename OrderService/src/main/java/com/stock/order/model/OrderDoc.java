@@ -13,7 +13,6 @@ public class OrderDoc {
 	private String stock2Name;
 	private Integer statusId;
 	private String operationTypeName;
-	private Integer documentId;
 	
 	private List<Order> orders;
 	
@@ -70,12 +69,6 @@ public class OrderDoc {
 	}
 	public void setOperationTypeName(String operationTypeName) {
 		this.operationTypeName = operationTypeName;
-	}
-	public Integer getDocumentId() {
-		return documentId;
-	}
-	public void setDocumentId(Integer documentId) {
-		this.documentId = documentId;
 	}
 	public List<Order> getOrders() {
 		return orders;

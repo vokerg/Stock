@@ -49,6 +49,12 @@ public class OrderDaoImpl implements OrderDao {
 			statement.setInt(5, order.getOperationTypeId());
 			statement.setInt(6, order.getProductId());
 			statement.setInt(7, STATUS_NEW);
+			if (order.getDocumentId() != null) {
+				statement.setInt(8, order.getDocumentId());	
+			} else {
+				statement.setNull(8, java.sql.Types.INTEGER);
+			}
+			
 			return statement;
 		}, keyHolder);
 		return (int) keyHolder.getKeys().get("id");

@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @ComponentScan( basePackages = {"com.stock.service", "com.stock.dao", "com.stock.OrderProcessor"} )
-@EnableDiscoveryClient
+//@EnableDiscoveryClient
 @EntityScan( basePackages = {"com.stock.model"} )
 @EnableJpaRepositories("com.stock.repository")
 @Import(RabbitConfiguration.class)

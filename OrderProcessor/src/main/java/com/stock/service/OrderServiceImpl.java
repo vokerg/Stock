@@ -26,10 +26,7 @@ public class OrderServiceImpl implements OrderService{
 	@Override
 	public void processOrder(String id) {
 		StockOrder order = getOrder(id);
-		StockRest stockRest1 = getStockRest(order.getProductId(), order.getStockId1());
-		StockRest stockRest2 = getStockRest(order.getProductId(), order.getStockId2());
-		updateStockRest(stockRest1, stockRest2, order.getOperationTypeId(), order.getQty());
-		updateOrderToProcessed(order);
+		processOrder(order);
 	}
 
 	private void updateStockRest(StockRest stockRest, StockRest stockRest2, int operationTypeId, float qty) {
@@ -39,18 +36,24 @@ public class OrderServiceImpl implements OrderService{
 		if (!op.isfTransfer()) {
 			return;
 		}
+		if (stockRest2 == null) {
+			return;
+		}
 		stockRest2.setQty(stockRest2.getQty() + qty * op.getSign() * (-1));
 		stockRestRepository.save(stockRest2);
 	}
 
-	private StockRest getStockRest(Integer productId, int stockId1) {
-		StockRest stockRest = stockRestRepository.findByProductIdAndStockId(productId, stockId1);
+	private StockRest getStockRest(Integer productId, Integer stockId) {
+		if (stockId == null) {
+			return null;
+		}
+		StockRest stockRest = stockRestRepository.findByProductIdAndStockId(productId, stockId);
 		if (stockRest != null) {
 			return stockRest;
 		}
 		stockRest = new StockRest();
 		stockRest.setProductId(productId);
-		stockRest.setStockId(stockId1);
+		stockRest.setStockId(stockId);
 		stockRest.setQty(0);
 		return stockRestRepository.save(stockRest);
 	}
@@ -62,5 +65,14 @@ public class OrderServiceImpl implements OrderService{
 
 	private StockOrder getOrder(String id) {
 		return orderRepository.findById(Long.valueOf(id));
+	}
+
+	@Override
+	public void processOrder(StockOrder order) {
+		StockRest stockRest1 = getStockRest(order.getProductId(), order.getStockId1());
+		StockRest stockRest2 = getStockRest(order.getProductId(), order.getStockId2());
+		updateStockRest(stockRest1, stockRest2, order.getOperationTypeId(), order.getQty());
+		updateOrderToProcessed(order);
+		
 	}
 }

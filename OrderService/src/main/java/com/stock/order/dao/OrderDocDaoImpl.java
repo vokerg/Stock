@@ -4,6 +4,7 @@ package com.stock.order.dao;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import com.stock.order.model.OrderDoc;
 
 @Component
 public class OrderDocDaoImpl implements OrderDocDao{
+
+	private static final int DOC_NEW = 0;
 
 	private static final String SELECT_STOCK_ORDER_DOCS = 
 			"SELECT d.*, s1.name as stock1_name, s2.name as stock2_name from stock_order_doc d" +
@@ -37,12 +40,17 @@ public class OrderDocDaoImpl implements OrderDocDao{
 	public int addDoc(OrderDoc doc) {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(connection -> {
-			PreparedStatement statement = connection.prepareStatement("insert into stock_order_doc (date, stock_id1, stock_id2, operation_type_id, status_id) values (?, ?, ?, ?, ?)");
-			statement.setDate(0, (Date) doc.getDate());
-			statement.setInt(1, doc.getStockId());
-			statement.setInt(2, doc.getStockId2());
-			statement.setInt(3, doc.getOperationTypeId());
-			statement.setInt(4, doc.getStatusId());
+			PreparedStatement statement = connection.prepareStatement("insert into stock_order_doc (date, stock_id1, stock_id2, operation_type_id, status_id) values (?, ?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+			statement.setDate(1, (Date) doc.getDate());
+			statement.setInt(2, doc.getStockId());
+			if (doc.getStockId2() != null) {
+				statement.setInt(3, doc.getStockId2());
+			} else {
+				statement.setNull(3, java.sql.Types.INTEGER);
+			}
+			statement.setInt(4, doc.getOperationTypeId());
+			statement.setInt(5, DOC_NEW);
 			return statement;
 		}, keyHolder);
 		int docId = (int) keyHolder.getKeys().get("id");
@@ -58,7 +66,6 @@ public class OrderDocDaoImpl implements OrderDocDao{
 		return jdbcTemplate.query(SELECT_STOCK_ORDER_DOCS, (ResultSet rs, int rowNum) -> {
 			OrderDoc doc = new OrderDoc();
 			doc.setDate(rs.getDate("date"));
-			doc.setDocumentId(rs.getInt("document_id"));
 			doc.setId(rs.getInt("id"));
 			doc.setOperationTypeId(rs.getInt("operation_type_id"));
 			doc.setOperationTypeName(operationTypeDao.getOperationTypeName(doc.getOperationTypeId()));
