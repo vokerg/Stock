@@ -34,7 +34,7 @@ public class RabbitMqListener {
 		System.out.println(id);
 	}
 	
-	@RabbitListener(queues = "orderDocAddedQueue")
+	@RabbitListener(queues = "docAddedQueue")
 	public void processOrderDocAddedQueue(String id) {
 		orderDocService.processOrderDoc(id);
 		System.out.println(id);

@@ -2,6 +2,7 @@ package com.stock.authorization;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,6 +22,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.netflix.zuul.context.RequestContext;
+
 public class AuthorizationFilter extends BasicAuthenticationFilter{
 
 	public static final String HEADER_STRING = "Authorization";
@@ -32,11 +35,11 @@ public class AuthorizationFilter extends BasicAuthenticationFilter{
 		this.restTemplate = restTemplate;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, FilterChain chain)
 					throws IOException, ServletException {
-		
 		String header = request.getHeader(HEADER_STRING);
 		if (header == null) {
 			chain.doFilter(request, response);
@@ -55,10 +58,16 @@ public class AuthorizationFilter extends BasicAuthenticationFilter{
 			chain.doFilter(request, response);
 			return;
 		}
-		
+
 		Authentication authentication = new UsernamePasswordAuthenticationToken(obj, null, new ArrayList<GrantedAuthority>());
 		
-		SecurityContextHolder.getContext().setAuthentication(authentication);	
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		//request.setAttribute("iduser", "1");
+		//MutableHttpServletRequest req = new MutableHttpServletRequest(request);
+		RequestContext requestContext = RequestContext.getCurrentContext();
+		requestContext.addZuulRequestHeader("idUser", ((LinkedHashMap<String, String>)obj.getBody()).get("idUser"));
+		//req.putHeader("idUser", "1");
 		chain.doFilter(request, response);
 	}
 

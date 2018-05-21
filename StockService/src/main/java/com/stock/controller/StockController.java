@@ -3,13 +3,17 @@ package com.stock.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -35,7 +39,12 @@ public class StockController {
 	}
 	
 	@GetMapping("")
-	public List<Stock> allStocks() {
+	public List<Stock> allStocks(@RequestHeader(value = "idUser", required = false) String idUser) {
+		if (idUser != null) {
+			Object obj = restTemplate.getForObject("http://STOCK-AUTH/users/" + idUser + "/viewstocks", Object.class);
+			System.out.println(obj);
+		}
+		System.out.println("iduser=" + idUser);
 		return this.stockRepository.findAll();
 	}
 	
