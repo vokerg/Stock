@@ -9,6 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.stock.auth.repository.UserRepository;
 import com.stock.auth.service.StockUserDetailService;
 
 @Configuration
@@ -19,7 +20,11 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 	StockUserDetailService stockUserDetailService;
 	
 	@Autowired
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Autowired
+	UserRepository userRepository;
+	
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {		
@@ -30,7 +35,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/authorize/**").authenticated()
 		.and()
 		.addFilter(new JwtAuthenticationFilter(authenticationManager()))
-		.addFilter(new JwtAuthorizationFIlter(authenticationManager()))
+		.addFilter(new JwtAuthorizationFIlter(authenticationManager(), userRepository))
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 	

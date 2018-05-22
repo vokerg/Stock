@@ -60,14 +60,9 @@ public class AuthorizationFilter extends BasicAuthenticationFilter{
 		}
 
 		Authentication authentication = new UsernamePasswordAuthenticationToken(obj, null, new ArrayList<GrantedAuthority>());
-		
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		
-		//request.setAttribute("iduser", "1");
-		//MutableHttpServletRequest req = new MutableHttpServletRequest(request);
 		RequestContext requestContext = RequestContext.getCurrentContext();
 		requestContext.addZuulRequestHeader("idUser", ((LinkedHashMap<String, String>)obj.getBody()).get("idUser"));
-		//req.putHeader("idUser", "1");
 		chain.doFilter(request, response);
 	}
 

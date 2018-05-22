@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stock.auth.model.SharedUserWrapper;
 import com.stock.auth.model.User;
 import com.stock.auth.repository.UserRepository;
 
@@ -33,6 +34,11 @@ public class UsersController {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		userRepository.save(user);
 		return ResponseEntity.ok(null);
+	}
+		
+	@GetMapping("/{userId}")
+	public SharedUserWrapper getUser(@PathVariable String userId) {
+		return new SharedUserWrapper(userRepository.findById(userId));
 	}
 	
 	@GetMapping("/{userId}/viewstocks")

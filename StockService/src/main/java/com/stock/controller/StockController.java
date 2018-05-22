@@ -41,7 +41,7 @@ public class StockController {
 	@GetMapping("")
 	public List<Stock> allStocks(@RequestHeader(value = "idUser", required = false) String idUser) {
 		if (idUser != null) {
-			Object obj = restTemplate.getForObject("http://STOCK-AUTH/users/" + idUser + "/viewstocks", Object.class);
+			Object obj = restTemplate.getForObject("http://STOCK-AUTH/users/" + idUser, Object.class);
 			System.out.println(obj);
 		}
 		System.out.println("iduser=" + idUser);

@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.stock.auth.model.AuthorizedUser;
+import com.stock.auth.repository.UserRepository;
+import com.stock.auth.service.StockUserDetailService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -23,8 +25,11 @@ import io.jsonwebtoken.Jwts;
 
 public class JwtAuthorizationFIlter extends BasicAuthenticationFilter {
 
-	public JwtAuthorizationFIlter(AuthenticationManager authenticationManager) {
+	private UserRepository userRepository;
+
+	public JwtAuthorizationFIlter(AuthenticationManager authenticationManager, UserRepository userRepository) {
 		super(authenticationManager);
+		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -40,10 +45,12 @@ public class JwtAuthorizationFIlter extends BasicAuthenticationFilter {
 					String username = (String) claims.get("username");
 					String idUser = (String) claims.get("idUser");
 
-					Authentication authentication = new UsernamePasswordAuthenticationToken(
-							new AuthorizedUser(idUser, username), null, new ArrayList<GrantedAuthority>());
-					//request.setAttribute("iduser", idUser);
-					SecurityContextHolder.getContext().setAuthentication(authentication);
+					if (userRepository.findById(idUser) != null) {
+						Authentication authentication = new UsernamePasswordAuthenticationToken(
+								new AuthorizedUser(idUser, username), null, new ArrayList<GrantedAuthority>());
+						SecurityContextHolder.getContext().setAuthentication(authentication);
+					}
+
 				} catch (JwtException e) {
 					request.setAttribute("exception", e);
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
