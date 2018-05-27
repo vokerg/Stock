@@ -38,7 +38,7 @@ public class UsersController {
 		
 	@GetMapping("/{userId}")
 	public SharedUserWrapper getUser(@PathVariable String userId) {
-		return new SharedUserWrapper(userRepository.findById(userId));
+		return SharedUserWrapper.wrapUser(userRepository.findById(userId));
 	}
 	
 	@GetMapping("/{userId}/viewstocks")

@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EntityScan( basePackages = {"com.stock.entity"} )
-@ComponentScan( basePackages = {"com.stock.controller", "com.stock.main"} )
+@ComponentScan( basePackages = {"com.stock.controller", "com.stock.main", "com.stock.service"} )
 @EnableJpaRepositories("com.stock.repository")
 public class StockApplication {
 

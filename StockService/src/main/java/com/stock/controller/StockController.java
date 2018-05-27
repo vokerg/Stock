@@ -1,92 +1,119 @@
 package com.stock.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.stock.entity.SharedUser;
 import com.stock.entity.Stock;
 import com.stock.entity.StockRest;
 import com.stock.repository.StockRepository;
 import com.stock.repository.StockRestRepository;
+import com.stock.service.UserService;
 
 @RestController
 @RequestMapping(value = "/stocks")
 public class StockController {
-	private StockRepository stockRepository;
-	private StockRestRepository stockRestRepository;
-	
+
+	@Autowired
+	StockRepository stockRepository;
+
+	@Autowired
+	StockRestRepository stockRestRepository;
+
 	@Autowired
 	RestTemplate restTemplate;
-	
-	public StockController(StockRepository stockRepository, StockRestRepository stockRestRepository) {
-		super();
-		this.stockRepository = stockRepository;
-		this.stockRestRepository = stockRestRepository;
-	}
-	
+
+	@Autowired
+	UserService userService;
+
 	@GetMapping("")
-	public List<Stock> allStocks(@RequestHeader(value = "idUser", required = false) String idUser) {
+	public List<Stock> allStocks(@RequestHeader(value = "idUser", required = false) String idUser)
+			throws JsonParseException, JsonMappingException, IOException {
 		if (idUser != null) {
-			Object obj = restTemplate.getForObject("http://STOCK-AUTH/users/" + idUser, Object.class);
-			System.out.println(obj);
+			SharedUser user = getSharedUser(idUser);
+			return user.isAdmin() ? this.stockRepository.findAll()
+					: this.stockRepository.findByIdIn(
+							user.getViewstocks().stream().map(id -> Long.valueOf(id)).collect(Collectors.toList()));
 		}
-		System.out.println("iduser=" + idUser);
 		return this.stockRepository.findAll();
 	}
-	
-	@GetMapping("/active")
-	public List<Stock> activeStocks() {
-		return this.stockRepository.findAll().stream().filter(stock -> !stock.getName().equals("Stock1")).collect(Collectors.toList());
-	}
-	
+
 	@GetMapping("/{id}")
-	public Stock getStock(
-			@PathVariable
-			String id) {
-		return this.stockRepository.findById(Long.valueOf(id));
+	public ResponseEntity<Stock> getStock(@RequestHeader(value = "idUser", required = false) String idUser,
+			@PathVariable String id) throws JsonParseException, JsonMappingException, IOException {
+		return userService.isAllowedToSeeStock(idUser, id)
+				? ResponseEntity.ok(this.stockRepository.findById(Long.valueOf(id)))
+				: ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+
 	}
-	
+
 	@GetMapping("/{id}/stockrest")
-	public List<StockRest> getStockRest(@PathVariable String id) {
-		return this.stockRestRepository.findByStock(this.stockRepository.findById(Long.valueOf(id)));
+	public ResponseEntity<List<StockRest>> getStockRest(
+			@RequestHeader(value = "idUser", required = false) String idUser, @PathVariable String id)
+			throws JsonParseException, JsonMappingException, NumberFormatException, IOException {
+		return userService.isAllowedToSeeStock(idUser, id)
+				? ResponseEntity
+						.ok(this.stockRestRepository.findByStock(this.stockRepository.findById(Long.valueOf(id))))
+				: ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 	}
-	
+
 	@GetMapping("/{id}/orders")
-	public Object getStockOrders(@PathVariable String id) {
-		return restTemplate.getForObject("http://order-api/orders?stockId=" + id, Object.class);
+	public ResponseEntity<?> getStockOrders(@RequestHeader(value = "idUser", required = false) String idUser,
+			@PathVariable String id) throws JsonParseException, JsonMappingException, RestClientException, IOException {
+		return userService.isAllowedToSeeStock(idUser, id)
+				? ResponseEntity.ok()
+						.body(restTemplate.getForObject("http://order-api/orders?stockId=" + id, Object.class))
+				: ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 	}
-	
+
 	@GetMapping("/{id}/orders/{orderId}")
-	public Object getStockOrders(@PathVariable String id, @PathVariable String orderId) {
-		return restTemplate.getForObject("http://order-api/orders/" + orderId, Object.class);
+	public ResponseEntity<?> getStockOrder(@RequestHeader(value = "idUser", required = false) String idUser,
+			@PathVariable String id, @PathVariable String orderId)
+			throws JsonParseException, JsonMappingException, RestClientException, IOException {
+		return userService.isAllowedToSeeStock(idUser, id)
+				? ResponseEntity.ok()
+						.body(restTemplate.getForObject("http://order-api/orders/" + orderId, Object.class))
+				: ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 	}
-	
+
 	@PutMapping("/")
 	public Stock addStock(@RequestBody Stock stock) {
 		stockRepository.save(stock);
 		return stock;
 	}
-	
+
 	@PostMapping("/{id}")
-	public ResponseEntity<?> updateStock(@RequestBody Stock stock, @PathVariable String id) {
+	public ResponseEntity<?> updateStock(@RequestHeader(value = "idUser", required = true) String idUser,
+			@RequestBody Stock stock, @PathVariable String id)
+			throws JsonParseException, JsonMappingException, IOException {
+		if (!userService.isAllowedToUpdateStock(idUser, id)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+		}
 		if (stock.getId() == Long.valueOf(id)) {
 			stockRepository.save(stock);
 			return ResponseEntity.ok(null);
 		}
 		return ResponseEntity.badRequest().body(null);
+	}
+
+	private SharedUser getSharedUser(String idUser) throws JsonParseException, JsonMappingException, IOException {
+		return userService.getSharedUser(idUser);
 	}
 }

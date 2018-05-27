@@ -7,6 +7,10 @@ public 	class SharedUserWrapper {
 	
 	private User user;
 	
+	public static SharedUserWrapper wrapUser(User user) {
+		return user != null ? new SharedUserWrapper(user) : null;
+	}
+	
 	public SharedUserWrapper(User user) {
 		this.user = user;
 	}
@@ -23,5 +27,9 @@ public 	class SharedUserWrapper {
 
 	public List<String> getViewstocks() {
 		return user.getViewstocks() != null ? user.getViewstocks() : new ArrayList<String>();
+	}
+	
+	public Boolean getProductCreator() {
+		return (user.getProductCreator() != null && user.getProductCreator()); 
 	}
 }

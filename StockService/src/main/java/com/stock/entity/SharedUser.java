@@ -1,10 +1,8 @@
-package com.stock.auth.model;
+package com.stock.entity;
 
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-
-public class User {
+public class SharedUser {
 	public String getId() {
 		return id;
 	}
@@ -17,39 +15,28 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	public Boolean getAdmin() {
+	public boolean isAdmin() {
 		return admin;
 	}
-	public void setAdmin(Boolean admin) {
+	public void setAdmin(boolean admin) {
 		this.admin = admin;
 	}
-
 	public List<String> getViewstocks() {
 		return viewstocks;
 	}
 	public void setViewstocks(List<String> viewstocks) {
 		this.viewstocks = viewstocks;
 	}
-
-	public Boolean getProductCreator() {
+	public boolean isProductCreator() {
 		return productCreator;
 	}
-	public void setProductCreator(Boolean productCreator) {
+	public void setProductCreator(boolean productCreator) {
 		this.productCreator = productCreator;
 	}
 
-	@Id
 	private String id;
 	private String username;
-	private String password;
-	private Boolean admin;
+	private boolean admin;
 	private List<String> viewstocks;
-	private Boolean productCreator;
+	private boolean productCreator;
 }
