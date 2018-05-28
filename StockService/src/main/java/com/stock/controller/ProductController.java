@@ -2,6 +2,7 @@ package com.stock.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.stock.entity.Product;
+import com.stock.entity.SharedUser;
 import com.stock.entity.StockRest;
 import com.stock.repository.ProductRepository;
 import com.stock.repository.StockRestRepository;
@@ -51,8 +53,15 @@ public class ProductController {
 	}
 
 	@GetMapping("/{id}/productrest")
-	public List<StockRest> getProductRest(@PathVariable String id) {
-		return this.stockRestRepository.findByProduct(this.productRepository.findById(Long.valueOf(id)));
+	public List<StockRest> getProductRest(@RequestHeader(value = "idUser", required = true) String idUser,
+			@PathVariable String id) throws JsonParseException, JsonMappingException, IOException {
+		if (idUser != null) {
+			SharedUser user = userService.getSharedUser(idUser);
+			return stockRestRepository.findByProductAndStockIdIn(productRepository.findById(Long.valueOf(id)),
+					user.getViewstocks().stream().map(stockId -> Long.valueOf(stockId)).collect(Collectors.toList()));
+		}
+
+		return stockRestRepository.findByProduct(productRepository.findById(Long.valueOf(id)));
 	}
 
 	@PutMapping("")
@@ -61,7 +70,7 @@ public class ProductController {
 		if (!userService.isAllowedToChangeProduct(idUser)) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 		}
-		this.productRepository.save(product);
+		productRepository.save(product);
 		return ResponseEntity.ok(product);
 	}
 
@@ -80,8 +89,10 @@ public class ProductController {
 	}
 
 	@GetMapping("/{id}/orders")
-	public Object getStockOrders(@PathVariable String id) {
-		return restTemplate.getForObject("http://order-api/orders?productId=" + id, Object.class);
+	public Object getStockOrders(@RequestHeader(value = "idUser", required = true) String idUser, @PathVariable String id) {
+		return (idUser != null) 
+				? restTemplate.getForObject("http://order-api/orders?productId=" + id + "&parameterUserId=" + idUser, Object.class)
+				: restTemplate.getForObject("http://order-api/orders?productId=" + id, Object.class);
 	}
 
 }
