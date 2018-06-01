@@ -86,18 +86,29 @@ public class OrderDaoImpl implements OrderDao {
 	}
 	
 	@Override
-	public List<Order> getOrdersByProductIdAndStockId(String productId, String stockId) {
+	public List<Order> getOrdersByProductIdAndStockId(String productId, String stockId, String userId) throws AccessForbidden {
+		if (!isAllowedToSeeStock(stockId, userId)) {
+			throw new AccessForbidden();
+		}
 		return getOrders(SELECT_ALL_ORDERS + " where product_id = " + productId + " and stock_id = " + stockId);
 	}
 
 	@Override
-	public List<Order> getOrdersByProductId(String productId) {
+	public List<Order> getOrdersByProductId(String productId, String userId) {
 		return getOrders(SELECT_ALL_ORDERS + " where product_id = " + productId);
 	}
 
 	@Override
-	public List<Order> getOrdersByStock(String stockId) {
+	public List<Order> getOrdersByStock(String stockId, String userId) throws AccessForbidden {
+		if (!isAllowedToSeeStock(stockId, userId)) {
+			throw new AccessForbidden();
+		}
 		return getOrders(SELECT_ALL_ORDERS + " where stock_id = " + stockId);
+	}
+
+	private boolean isAllowedToSeeStock(String stockId, String userId) {
+		// TODO 
+		return userId == null;
 	}
 
 	@Override

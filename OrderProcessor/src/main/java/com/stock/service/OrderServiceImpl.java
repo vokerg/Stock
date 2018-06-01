@@ -29,17 +29,13 @@ public class OrderServiceImpl implements OrderService{
 		processOrder(order);
 	}
 
-	private void updateStockRest(StockRest stockRest, StockRest stockRest2, int operationTypeId, float qty) {
-		OperationType op = operationTypeRepository.getById((long) operationTypeId);
-		stockRest.setQty(stockRest.getQty() + qty * op.getSign());
+	private void updateStockRest(StockRest stockRest, StockRest stockRest2, OperationType operationType, float qty) {
+		stockRest.setQty(stockRest.getQty() + qty * operationType.getSign());
 		stockRestRepository.save(stockRest);
-		if (!op.isfTransfer()) {
+		if (!operationType.isfTransfer() || stockRest2 == null) {
 			return;
 		}
-		if (stockRest2 == null) {
-			return;
-		}
-		stockRest2.setQty(stockRest2.getQty() + qty * op.getSign() * (-1));
+		stockRest2.setQty(stockRest2.getQty() + qty * operationType.getSign() * (-1));
 		stockRestRepository.save(stockRest2);
 	}
 
@@ -69,9 +65,12 @@ public class OrderServiceImpl implements OrderService{
 
 	@Override
 	public void processOrder(StockOrder order) {
-		StockRest stockRest1 = getStockRest(order.getProductId(), order.getStockId1());
-		StockRest stockRest2 = getStockRest(order.getProductId(), order.getStockId2());
-		updateStockRest(stockRest1, stockRest2, order.getOperationTypeId(), order.getQty());
+		OperationType operationType = operationTypeRepository.getById((long) order.getOperationTypeId());
+		if (operationType.getSign() != 0) {
+			StockRest stockRest1 = getStockRest(order.getProductId(), order.getStockId1());
+			StockRest stockRest2 = getStockRest(order.getProductId(), order.getStockId2());
+			updateStockRest(stockRest1, stockRest2, operationType, order.getQty());
+		}
 		updateOrderToProcessed(order);
 		
 	}

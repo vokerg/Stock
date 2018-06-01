@@ -91,7 +91,7 @@ public class ProductController {
 	@GetMapping("/{id}/orders")
 	public Object getStockOrders(@RequestHeader(value = "idUser", required = true) String idUser, @PathVariable String id) {
 		return (idUser != null) 
-				? restTemplate.getForObject("http://order-api/orders?productId=" + id + "&parameterUserId=" + idUser, Object.class)
+				? restTemplate.getForObject("http://order-api/orders?productId=" + id + "&paramUserId=" + idUser, Object.class)
 				: restTemplate.getForObject("http://order-api/orders?productId=" + id, Object.class);
 	}
 
