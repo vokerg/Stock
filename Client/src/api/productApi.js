@@ -6,12 +6,12 @@ export const getProducts = next =>
     .then(products => next(products));
 
 export const getProduct = id => next =>
-  fetch(`/stock/products/${id}`)
+  fetch(`/stock/products/${id}`, {headers:{...authorization()}})
     .then(response => response.json())
     .then(product => next(product));
 
 export const getProductRests = id => next =>
-  fetch(`/stock/products/${id}/productrest`)
+  fetch(`/stock/products/${id}/productrest`, {headers:{...authorization()}})
     .then(response => response.json())
     .then(productRests => next(productRests));
 
@@ -21,7 +21,8 @@ export const insertProduct = product => next =>
       body: JSON.stringify(product),
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...authorization()
       }
   })
   .then(product => next(product));
@@ -32,7 +33,8 @@ export const insertProduct = product => next =>
         body: JSON.stringify(product),
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...authorization()
         }
     })
     .then(response => next(response));

@@ -7,9 +7,11 @@ import com.stock.order.model.Order;
 public interface OrderDao {
 	public List<Order> getAllOrders();
 	public int addOrder(Order order);
-	public List<Order> getOrdersByProductIdAndStockId(String productId, String stockId, String userId) throws AccessForbidden;
-	public List<Order> getOrdersByProductId(String productId, String userId);
-	public List<Order> getOrdersByStock(String stockId, String userId) throws AccessForbidden;
+	public List<Order> getOrdersByProductIdAndStockId(String productId, String stockId);
+	public List<Order> getOrdersByProductId(String productId);
 	public List<Order> getOrdersByDoc(int docId);
 	public Order getOrderById(String id);
+	public List<Order> getOrdersByStock(String stockId);
+	public List<Order> getOrdersByProductIdAndStockList(String productId, List<String> viewstocks);
+	public List<Order> getOrdersByStockList(List<String> viewstocks);
 }

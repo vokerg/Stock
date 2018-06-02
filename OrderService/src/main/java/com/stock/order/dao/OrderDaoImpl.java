@@ -86,30 +86,20 @@ public class OrderDaoImpl implements OrderDao {
 	}
 	
 	@Override
-	public List<Order> getOrdersByProductIdAndStockId(String productId, String stockId, String userId) throws AccessForbidden {
-		if (!isAllowedToSeeStock(stockId, userId)) {
-			throw new AccessForbidden();
-		}
+	public List<Order> getOrdersByProductIdAndStockId(String productId, String stockId){
 		return getOrders(SELECT_ALL_ORDERS + " where product_id = " + productId + " and stock_id = " + stockId);
 	}
 
 	@Override
-	public List<Order> getOrdersByProductId(String productId, String userId) {
+	public List<Order> getOrdersByProductId(String productId) {
 		return getOrders(SELECT_ALL_ORDERS + " where product_id = " + productId);
 	}
 
 	@Override
-	public List<Order> getOrdersByStock(String stockId, String userId) throws AccessForbidden {
-		if (!isAllowedToSeeStock(stockId, userId)) {
-			throw new AccessForbidden();
-		}
+	public List<Order> getOrdersByStock(String stockId){
 		return getOrders(SELECT_ALL_ORDERS + " where stock_id = " + stockId);
 	}
 
-	private boolean isAllowedToSeeStock(String stockId, String userId) {
-		// TODO 
-		return userId == null;
-	}
 
 	@Override
 	public Order getOrderById(String id) {
@@ -120,5 +110,17 @@ public class OrderDaoImpl implements OrderDao {
 	@Override
 	public List<Order> getOrdersByDoc(int docId) {
 		return getOrders(SELECT_ALL_ORDERS + " where document_id = " + String.valueOf(docId));
+	}
+
+	@Override
+	public List<Order> getOrdersByProductIdAndStockList(String productId, List<String> viewstocks) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Order> getOrdersByStockList(List<String> viewstocks) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
