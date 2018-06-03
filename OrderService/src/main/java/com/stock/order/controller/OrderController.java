@@ -1,4 +1,4 @@
-package com.stock.order;
+package com.stock.order.controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,57 +21,70 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.stock.order.dao.OrderDao;
 import com.stock.order.model.Order;
 import com.stock.order.model.SharedUser;
+import com.stock.order.service.UserService;
 
 @RestController
 @RequestMapping(value = "/orders")
 public class OrderController {
-	
+
 	@Autowired
 	OrderDao orderDao;
-	
+
 	@Autowired
 	AmqpTemplate template;
-	
+
 	@Autowired
 	UserService userService;
-	
+
 	@GetMapping("/{id}")
-	public Order getOrder(@PathVariable String id) {
-		return orderDao.getOrderById(id);
-	}
-	
-	@GetMapping("")
-	public ResponseEntity<List<Order>> getOrders(
-			@RequestHeader(value = "idUser", required = true) String idUser,
-			@RequestParam(value = "productId", required = false) String productId,
-			@RequestParam(value = "stockId", required = false) String stockId,
-			@RequestParam(value = "paramUserId", required = false) String paramUserId
-	) throws JsonParseException, JsonMappingException, IOException {
+	public ResponseEntity<Order> getOrder(@RequestHeader(value = "idUser", required = false) String idUser,
+			@PathVariable String id) throws JsonParseException, JsonMappingException, IOException {
 		SharedUser sharedUser = (idUser != null) ? userService.getSharedUser(idUser) : null;
 		if ((idUser != null) && (sharedUser == null)) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
-		
+		Order order = orderDao.getOrderById(id);
+		if (order != null && !userService.isAllowedToSeeStock(sharedUser, order.getStockId())
+				&& !userService.isAllowedToSeeStock(sharedUser, order.getStockId2())) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+		}
+		return ResponseEntity.ok(order);
+	}
+
+	@GetMapping("")
+	public ResponseEntity<List<Order>> getOrders(@RequestHeader(value = "idUser", required = false) String idUser,
+			@RequestParam(value = "productId", required = false) String productId,
+			@RequestParam(value = "stockId", required = false) String stockId,
+			@RequestParam(value = "paramUserId", required = false) String paramUserId)
+			throws JsonParseException, JsonMappingException, IOException {
+		SharedUser sharedUser = (idUser != null) ? userService.getSharedUser(idUser)
+				: (paramUserId != null) ? userService.getSharedUser(idUser) : null;
+		if ((idUser != null || paramUserId != null) && (sharedUser == null)) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
+
 		if ((sharedUser != null) && (stockId != null) && (!sharedUser.getViewstocks().contains(stockId))) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 		}
-		
+
 		if ((productId != null) && (stockId != null)) {
 			return ResponseEntity.ok(orderDao.getOrdersByProductIdAndStockId(productId, stockId));
 		}
-		
+
 		if (productId != null) {
-			List<Order> orders = (sharedUser == null) ? orderDao.getOrdersByProductId(productId) : orderDao.getOrdersByProductIdAndStockList(productId, sharedUser.getViewstocks());
+			List<Order> orders = (sharedUser == null) ? orderDao.getOrdersByProductId(productId)
+					: orderDao.getOrdersByProductIdAndStockList(productId, sharedUser.getViewstocks());
 			return ResponseEntity.ok(orders);
 		}
-		
+
 		if (stockId != null) {
 			return ResponseEntity.ok(orderDao.getOrdersByStock(stockId));
 		}
-		List<Order> orders = (sharedUser == null) ? orderDao.getAllOrders() : orderDao.getOrdersByStockList(sharedUser.getViewstocks());
+		List<Order> orders = (sharedUser == null) ? orderDao.getAllOrders()
+				: orderDao.getOrdersByStockList(sharedUser.getViewstocks());
 		return ResponseEntity.ok(orders);
 	}
-	
+
 	@PutMapping("")
 	public void addOrder(@RequestBody Order order) {
 		int orderId = orderDao.addOrder(order);

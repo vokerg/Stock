@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -114,13 +115,15 @@ public class OrderDaoImpl implements OrderDao {
 
 	@Override
 	public List<Order> getOrdersByProductIdAndStockList(String productId, List<String> viewstocks) {
-		// TODO Auto-generated method stub
-		return null;
+		return getOrders(SELECT_ALL_ORDERS + " where product_id = " + productId + " and " + getOrdersByStockListSql(viewstocks));
 	}
 
 	@Override
 	public List<Order> getOrdersByStockList(List<String> viewstocks) {
-		// TODO Auto-generated method stub
-		return null;
+		return getOrders(SELECT_ALL_ORDERS + " where " + getOrdersByStockListSql(viewstocks));
+	}
+
+	private String getOrdersByStockListSql(List<String> viewstocks) {
+		return "stock_id in (" + viewstocks.stream().collect(Collectors.joining(",")) + ")";
 	}
 }

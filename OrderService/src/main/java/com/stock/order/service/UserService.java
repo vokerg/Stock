@@ -1,4 +1,4 @@
-package com.stock.order;
+package com.stock.order.service;
 
 import java.io.IOException;
 
@@ -20,5 +20,9 @@ public class UserService {
 		String obj = restTemplate.getForObject("http://STOCK-AUTH/users/" + idUser, String.class);
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.readValue(obj, SharedUser.class);
+	}
+	
+	public boolean isAllowedToSeeStock(SharedUser sharedUser, Integer stockId) {
+		return (sharedUser == null || stockId == null || sharedUser.getViewstocks().contains(String.valueOf(stockId)));
 	}
 }
