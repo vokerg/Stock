@@ -26,7 +26,9 @@ public class StockRunner implements CommandLineRunner{
 	@Override
 	public void run(String... arg0) throws Exception {
 		
-		List<StockRest> sr = stockRestRepository.findByProductAndStockIdIn(productRepository.findAll().get(0), Stream.of((long)1).collect(Collectors.toList()));
+		//List<StockRest> sr = stockRestRepository.findByProductAndStockIdIn(productRepository.findAll().get(0), Stream.of((long)1).collect(Collectors.toList()));
+		Stock stock = stockRepository.findById((long) 1);
+		List<StockRest> sr = stockRestRepository.findByStockExcludeEmpty(stock);
 		System.out.println(sr);
 		/*
 		Stream.of("Stock1", "Stock2", "Stock3").forEach(stockName -> stockRepository.save(new Stock(stockName)));

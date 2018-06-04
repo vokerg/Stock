@@ -124,6 +124,7 @@ public class OrderDaoImpl implements OrderDao {
 	}
 
 	private String getOrdersByStockListSql(List<String> viewstocks) {
-		return "stock_id in (" + viewstocks.stream().collect(Collectors.joining(",")) + ")";
+		String viewStocks = viewstocks.stream().collect(Collectors.joining(","));
+		return "(stock_id1 in (" + viewStocks + ") or stock_id2 in(" + viewStocks + "))";
 	}
 }

@@ -70,7 +70,7 @@ public class StockController {
 			throws JsonParseException, JsonMappingException, NumberFormatException, IOException {
 		return userService.isAllowedToSeeStock(idUser, id)
 				? ResponseEntity
-						.ok(this.stockRestRepository.findByStock(this.stockRepository.findById(Long.valueOf(id))))
+						.ok(this.stockRestRepository.findByStockExcludeEmpty(this.stockRepository.findById(Long.valueOf(id))))
 				: ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 	}
 
