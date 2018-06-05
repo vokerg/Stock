@@ -1,4 +1,14 @@
 import React from 'react';
+
+import { Link } from 'react-router-dom';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+
 import { getOrders } from '../../api/ordersApi';
 
 class OrdersView extends React.Component {
@@ -24,18 +34,38 @@ class OrdersView extends React.Component {
   }
 
   render() {
+    console.log(this.state.orders)
     return (
-      <table>
-        orders view!
-        {this.state.orders.map(order =>
-            <tr key={order.id}>
-              <td>{order.productName}</td>
-              <td>{order.stockName}</td>
-              <td>{order.stock2Name}</td>
-              <td>{order.qty}</td>
-            </tr>
-        )}
-      </table>
+      <div>
+        <div>Recent orders</div>
+        <Paper>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Document ID</TableCell>
+                <TableCell>Document type</TableCell>
+                <TableCell>Product name</TableCell>
+                <TableCell>Stock name</TableCell>
+                <TableCell>Stock name (transfer to)</TableCell>
+                <TableCell>QTY</TableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {this.state.orders.map(order =>
+                  <TableRow key={order.id}>
+                    <TableCell>{order.document_id}</TableCell>
+                    <TableCell>{order.operationTypeName}</TableCell>
+                    <TableCell><Link to={`/products/${order.productId}`}>{order.productName}</Link></TableCell>
+                    <TableCell><Link to={`/products/${order.stockId}`}>{order.stockName}</Link></TableCell>
+                    <TableCell><Link to={`/products/${order.stockId2}`}>{order.stock2Name}</Link></TableCell>
+                    <TableCell numeric>{order.qty}</TableCell>
+                  </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Paper>
+      </div>
     )
   }
 }
