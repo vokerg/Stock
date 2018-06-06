@@ -34,7 +34,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/tests/**").permitAll()
 		.antMatchers("/authorize/**").authenticated()
 		.and()
-		.addFilter(new JwtAuthenticationFilter(authenticationManager()))
+		.addFilter(new JwtAuthenticationFilter(authenticationManager(), userRepository))
 		.addFilter(new JwtAuthorizationFIlter(authenticationManager(), userRepository))
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}

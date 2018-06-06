@@ -14,16 +14,23 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stock.auth.model.AuthenticatedUser;
+import com.stock.auth.model.SharedUserWrapper;
+import com.stock.auth.repository.UserRepository;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
-    JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+	private UserRepository userRepository;
+	
+    JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
     		super();
     		this.setAuthenticationManager(authenticationManager);
+    		this.userRepository = userRepository;
     }
     
 	@Override
@@ -32,14 +39,26 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             FilterChain chain,
             Authentication auth) throws IOException, ServletException {
 		AuthenticatedUser user = (AuthenticatedUser) auth.getPrincipal();
-		Map<String, Object> authorizedUserMap = new HashMap<String, Object>();
-		authorizedUserMap.put("idUser", user.getIdUser());
-		authorizedUserMap.put("username", user.getUsername());
 		String token = Jwts.builder()
-				.setClaims(authorizedUserMap)
+				.setClaims(getAuthorizedUserMap(user))
                 .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET.getBytes())
                 .compact();
         res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+        res.getWriter().print(getSharedUserJson(user));
+        res.getWriter().flush();
+	}
+
+	private Map<String, Object> getAuthorizedUserMap(AuthenticatedUser user) {
+		Map<String, Object> authorizedUserMap = new HashMap<String, Object>();
+		authorizedUserMap.put("idUser", user.getIdUser());
+		authorizedUserMap.put("username", user.getUsername());
+		return authorizedUserMap; 
+	}
+
+	private String getSharedUserJson(AuthenticatedUser user) throws JsonProcessingException {
+		SharedUserWrapper sharedUser = SharedUserWrapper.wrapUser(userRepository.findById(user.getIdUser()));
+        ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(sharedUser);
 	}
 }

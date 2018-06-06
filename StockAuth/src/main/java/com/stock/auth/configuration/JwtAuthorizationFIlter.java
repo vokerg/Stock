@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.stock.auth.model.AuthorizedUser;
 import com.stock.auth.repository.UserRepository;
-import com.stock.auth.service.StockUserDetailService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

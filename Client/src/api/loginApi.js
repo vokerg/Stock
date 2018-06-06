@@ -3,5 +3,11 @@ export const login = (username, password) => next =>
       method: 'post',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
-      }})
-    .then(response => next(response.headers.get('authorization'), response.status));
+  }})
+  .then(response => {
+    response.json().then(body => next({
+      token: response.headers.get('authorization'),
+      status: response.status,
+      ...body
+    }))
+  });

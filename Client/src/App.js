@@ -14,28 +14,34 @@ import Product from './components/product';
 import EditDocument from './components/editDocument'
 import './App.css';
 
+const Routes = (props) => {
+  return (
+    <div>
+      <Navigator history={props.history}/>
+      <div>
+        <Route exact path="/" component= {Stocks} />
+        <Route exact path="/stocks" component= {Stocks} />
+        <Route exact path="/products" component= {Products} />
+        <Route exact path="/products/:id" component= {Product} />
+        <Route exact path="/products/:id/edit" component= {EditProduct} />
+        <Route exact path="/orders" component= {Orders} />
+        <Route exact path="/createstock" component= {EditStock} />
+        <Route exact path="/stocks/:id" component= {Stock} />
+        <Route exact path="/stocks/:id/edit" component= {EditStock} />
+        <Route exact path="/login" component= {Login} />
+        <Route exact path="/logout" component= {Logout} />
+        <Route exact path="/newdocument" component= {EditDocument} />
+      </div>
+    </div>
+  )
+}
+
 class App extends Component {
   render() {
     return (
       <div className="App">
         <BrowserRouter>
-          <div>
-            <Navigator />
-            <div>
-              <Route exact path="/" component= {Stocks} />
-              <Route exact path="/stocks" component= {Stocks} />
-              <Route exact path="/products" component= {Products} />
-              <Route exact path="/products/:id" component= {Product} />
-              <Route exact path="/products/:id/edit" component= {EditProduct} />
-              <Route exact path="/orders" component= {Orders} />
-              <Route exact path="/createstock" component= {EditStock} />
-              <Route exact path="/stocks/:id" component= {Stock} />
-              <Route exact path="/stocks/:id/edit" component= {EditStock} />
-              <Route exact path="/login" component= {Login} />
-              <Route exact path="/logout" component= {Logout} />
-              <Route exact path="/newdocument" component= {EditDocument} />
-            </div>
-          </div>
+          <Route path="/" component = {Routes} />
         </BrowserRouter>
       </div>
     );

@@ -11,23 +11,24 @@ class Login extends React.Component {
     };
   }
 
-  onChange = event => {
+  onChange = event =>
     this.setState({
       ...this.state,
       [event.target.name]: event.target.value
-    });
-  }
+  })
 
   onSubmit = event => {
     event.preventDefault();
-    login(this.state.username, this.state.password)((token, status) => {
+    login(this.state.username, this.state.password)(({token, status, ...user}) => {
       if (status === 200) {
         localStorage.setItem('authorization', token)
+        console.log(user)
+        localStorage.setItem('user', JSON.stringify(user));
         this.props.history.push("/")
       } else {
         this.setState({errorMessage: "Incorrect username or passowrd"})
       }
-    })
+    });
   }
 
   render() {
