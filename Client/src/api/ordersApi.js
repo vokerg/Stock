@@ -35,3 +35,17 @@ export const insertOrder = order => next =>
       }
   })
   .then(response => next(response));
+
+  export const getDocs = next =>
+    fetch(
+      '/orders/docs/', {
+        headers: {...authorization()}
+      }
+    )
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw Error(response.statusText);
+    })
+    .then(docs => next(docs));

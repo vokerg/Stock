@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import com.stock.order.model.Order;
+import com.stock.order.service.CommonUtils;
 
 @Component
 public class OrderDaoImpl implements OrderDao {
@@ -77,6 +78,7 @@ public class OrderDaoImpl implements OrderDao {
 					order.setProductName(rs.getString("product_name"));
 					order.setStockName(rs.getString("stock1_name"));
 					order.setStock2Name(rs.getString("stock2_name"));
+					order.setStocksName(CommonUtils.getCombinedStocksDescription(order.getStockName(), order.getStock2Name()));
 					return order;
 				});
 	}

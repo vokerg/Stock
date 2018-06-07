@@ -13,6 +13,7 @@ public class OrderDoc {
 	private String stock2Name;
 	private Integer statusId;
 	private String operationTypeName;
+	private String stocksName;
 	
 	private List<Order> orders;
 	
@@ -75,5 +76,11 @@ public class OrderDoc {
 	}
 	public void setOrders(List<Order> orders) {
 		this.orders = orders;
+	}
+	public String getStocksName() {
+		return stocksName;
+	}
+	public void setStocksName(String stocksName) {
+		this.stocksName = stocksName;
 	}
 }

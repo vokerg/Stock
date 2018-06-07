@@ -45,8 +45,7 @@ class OrdersView extends React.Component {
                 <TableCell>Document ID</TableCell>
                 <TableCell>Document type</TableCell>
                 <TableCell>Product name</TableCell>
-                <TableCell>Stock name</TableCell>
-                <TableCell>Stock name (transfer to)</TableCell>
+                <TableCell>Stock</TableCell>
                 <TableCell>QTY</TableCell>
               </TableRow>
             </TableHead>
@@ -57,8 +56,7 @@ class OrdersView extends React.Component {
                     <TableCell>{order.document_id}</TableCell>
                     <TableCell>{order.operationTypeName}</TableCell>
                     <TableCell><Link to={`/products/${order.productId}`}>{order.productName}</Link></TableCell>
-                    <TableCell><Link to={`/products/${order.stockId}`}>{order.stockName}</Link></TableCell>
-                    <TableCell><Link to={`/products/${order.stockId2}`}>{order.stock2Name}</Link></TableCell>
+                    <TableCell><Link to={`/products/${order.stockId}`}>{order.stocksName}</Link></TableCell>
                     <TableCell numeric>{order.qty}</TableCell>
                   </TableRow>
               )}

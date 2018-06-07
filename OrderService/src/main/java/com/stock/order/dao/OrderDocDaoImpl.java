@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.stock.order.model.OrderDoc;
+import com.stock.order.service.CommonUtils;
 
 @Component
 public class OrderDocDaoImpl implements OrderDocDao{
@@ -22,7 +23,7 @@ public class OrderDocDaoImpl implements OrderDocDao{
 	private static final int DOC_NEW = 0;
 
 	private static final String SELECT_STOCK_ORDER_DOCS = 
-			"SELECT d.*, s1.name as stock1_name, s2.name as stock2_name from stock_order_doc d" +
+			"SELECT d.*, s1.name as stock1_name, s2.name as stock2_name from stock_order_doc d\n" +
 					"left join stock s1 on s1.id = d.stock_id1\n" + 
 					"left join stock s2 on s2.id = d.stock_id2";
 
@@ -74,8 +75,11 @@ public class OrderDocDaoImpl implements OrderDocDao{
 			doc.setStockName(rs.getString("stock1_name"));
 			doc.setStock2Name(rs.getString("stock2_name"));
 			doc.setOrders(orderDao.getOrdersByDoc(doc.getId()));
+			doc.setStocksName(CommonUtils.getCombinedStocksDescription(doc.getStockName(), doc.getStock2Name()));
 			return doc;
 		});
 	}
+
+
 
 }

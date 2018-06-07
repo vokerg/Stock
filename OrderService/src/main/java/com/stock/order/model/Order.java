@@ -16,6 +16,7 @@ public class Order {
 	private Integer statusId;
 	private String operationTypeName;
 	private Integer documentId;
+	private String stocksName;
 	
 	public int getId() {
 		return id;
@@ -94,5 +95,11 @@ public class Order {
 	}
 	public void setDocumentId(Integer documentId) {
 		this.documentId = documentId;
+	}
+	public String getStocksName() {
+		return stocksName;
+	}
+	public void setStocksName(String stocksName) {
+		this.stocksName = stocksName;
 	}
 }

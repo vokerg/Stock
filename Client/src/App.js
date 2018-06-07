@@ -11,7 +11,8 @@ import Login from './components/login';
 import Logout from './components/logout';
 import EditProduct from './components/editProduct';
 import Product from './components/product';
-import EditDocument from './components/editDocument'
+import EditDocument from './components/editDocument';
+import Documents from './components/documents';
 import './App.css';
 
 const Routes = (props) => {
@@ -30,6 +31,7 @@ const Routes = (props) => {
         <Route exact path="/stocks/:id/edit" component= {EditStock} />
         <Route exact path="/login" component= {Login} />
         <Route exact path="/logout" component= {Logout} />
+        <Route exact path="/documents" component= {Documents} />
         <Route exact path="/newdocument" component= {EditDocument} />
       </div>
     </div>

@@ -17,6 +17,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import Paper from '@material-ui/core/Paper';
 
 const styles = {
   root: {
@@ -59,7 +60,7 @@ class Navigator extends React.Component  {
     const {anchorEl, drawer, username} = this.state;
     const open = Boolean(anchorEl);
     return (
-      <div className={classes.root}>
+      <Paper className={classes.root}>
         <AppBar position="static">
           <Toolbar>
             <IconButton color="inherit" aria-label="Menu" className={classes.menuButton} onClick={this.toggleDrawer(true)}>
@@ -119,13 +120,16 @@ class Navigator extends React.Component  {
                   <ListItemText primary="Products" onClick={this.redirect('products')}/>
                 </ListItem>
                 <ListItem button>
+                  <ListItemText primary="Documents" onClick={this.redirect('documents')}/>
+                </ListItem>
+                <ListItem button>
                   <ListItemText primary="Orders" onClick={this.redirect('orders')}/>
                 </ListItem>
               </List>
             </div>
           </div>
         </Drawer>
-      </div>
+      </Paper>
     )
   }
 }
