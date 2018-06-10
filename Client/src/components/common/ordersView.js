@@ -9,7 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import { getAllOrders, getOrdersForDoc, getOrdersForStock } from '../../api/ordersApi';
+import { getAllOrders, getOrdersForDoc, getOrdersForStock, getOrdersForProduct } from '../../api/ordersApi';
 
 class OrdersView extends React.Component {
 
@@ -21,13 +21,16 @@ class OrdersView extends React.Component {
   }
 
   componentDidMount() {
-    let {match, documentId, stockId, isShort} = this.props;
+    let {match, documentId, stockId, productId, isShort} = this.props;
     stockId = (match !== undefined) ? match.params.stockId : (stockId !== undefined) ? stockId : undefined
     if (stockId !== undefined) {
       getOrdersForStock(stockId)(orders => this.setState({orders}))
       .catch(error => this.props.redirectUnauthorized());
     } else if (documentId !== undefined) {
       getOrdersForDoc(documentId)(orders => this.setState({orders}))
+      .catch(error => this.props.redirectUnauthorized());
+    } else  if (productId !== undefined) {
+      getOrdersForProduct(productId)(orders => this.setState({orders}))
       .catch(error => this.props.redirectUnauthorized());
     } else {
       getAllOrders(orders => this.setState({orders}))
@@ -55,7 +58,7 @@ class OrdersView extends React.Component {
             <TableBody>
               {this.state.orders.map(order =>
                   <TableRow key={order.id}>
-                    <TableCell>{order.document_id}</TableCell>
+                    <TableCell>{order.documentId}</TableCell>
                     {(isShort===undefined) && <TableCell>{order.operationTypeName}</TableCell>}
                     <TableCell><Link to={`/products/${order.productId}`}>{order.productName}</Link></TableCell>
                     {(isShort===undefined) && <TableCell><Link to={`/stocks/${order.stockId}`}>{order.stocksName}</Link></TableCell>}

@@ -20,7 +20,7 @@ public class OrderDaoImpl implements OrderDao {
 
 	private static final String SELECT_ALL_ORDERS = "select \n" + 
 			"	so.id, so.date, so.stock_id1, so.stock_id2, so.product_id, so.qty, so.operation_type_id, so.status_id,\n" + 
-			"	p.name as product_name, s1.name as stock1_name, s2.name as stock2_name\n" + 
+			"	p.name as product_name, s1.name as stock1_name, s2.name as stock2_name, so.document_id\n" + 
 			"from stock_order so\n" + 
 			"left join product p on p.id = so.product_id\n" + 
 			"left join stock s1 on s1.id = so.stock_id1\n" + 
@@ -71,7 +71,8 @@ public class OrderDaoImpl implements OrderDao {
 					order.setId(rs.getInt("id"));
 					order.setDate(rs.getDate("date"));
 					order.setStockId(rs.getInt("stock_id1"));
-					order.setStockId2(rs.getInt("stock_id2"));
+					Integer idStock2 = rs.getInt("stock_id2");
+					order.setStockId2(rs.wasNull() ? null : idStock2);
 					order.setQty(rs.getInt("qty"));
 					order.setProductId(rs.getInt("product_id"));
 					order.setOperationTypeId(rs.getInt("operation_type_id"));
@@ -81,6 +82,8 @@ public class OrderDaoImpl implements OrderDao {
 					order.setStockName(rs.getString("stock1_name"));
 					order.setStock2Name(rs.getString("stock2_name"));
 					order.setStocksName(CommonUtils.getCombinedStocksDescription(order.getStockName(), order.getStock2Name()));
+					Integer documentId = rs.getInt("document_id");
+					order.setDocumentId(rs.wasNull() ? null : documentId);
 					return order;
 				});
 	}
@@ -108,7 +111,7 @@ public class OrderDaoImpl implements OrderDao {
 
 	@Override
 	public Order getOrderById(String id) {
-		List<Order> orders = getOrders(SELECT_ALL_ORDERS + " and id=" + id);
+		List<Order> orders = getOrders(SELECT_ALL_ORDERS + " and so.id=" + id);
 		return (orders.size() > 0) ? orders.get(0) : null;
 	}
 
@@ -141,7 +144,7 @@ public class OrderDaoImpl implements OrderDao {
 
 	private String getSubQueryByStockList(List<String> viewstocks) {
 		String viewStocks = viewstocks.stream().collect(Collectors.joining(","));
-		return "(stock_id1 in (" + viewStocks + ") or stock_id2 in(" + viewStocks + "))";
+		return " and (stock_id1 in (" + viewStocks + ") or stock_id2 in(" + viewStocks + "))";
 	}
 	
 	private String getSubQueryByStockId(String stockId) {

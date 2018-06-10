@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,7 +26,8 @@ public class OrderDocDaoImpl implements OrderDocDao{
 	private static final String SELECT_STOCK_ORDER_DOCS = 
 			"SELECT d.*, s1.name as stock1_name, s2.name as stock2_name from stock_order_doc d\n" +
 					"left join stock s1 on s1.id = d.stock_id1\n" + 
-					"left join stock s2 on s2.id = d.stock_id2";
+					"left join stock s2 on s2.id = d.stock_id2\n" +
+					"where 1=1";
 
 	@Autowired
 	OrderDao orderDao;
@@ -61,17 +63,17 @@ public class OrderDocDaoImpl implements OrderDocDao{
 			.forEach(order -> orderDao.addOrder(order));
 		return docId;
 	}
-
-	@Override
-	public List<OrderDoc> getDocs() {
-		return jdbcTemplate.query(SELECT_STOCK_ORDER_DOCS, (ResultSet rs, int rowNum) -> {
+	
+	public List<OrderDoc> getDocs(String subquery) {
+		return jdbcTemplate.query(SELECT_STOCK_ORDER_DOCS + subquery, (ResultSet rs, int rowNum) -> {
 			OrderDoc doc = new OrderDoc();
 			doc.setDate(rs.getDate("date"));
 			doc.setId(rs.getInt("id"));
 			doc.setOperationTypeId(rs.getInt("operation_type_id"));
 			doc.setOperationTypeName(operationTypeDao.getOperationTypeName(doc.getOperationTypeId()));
 			doc.setStockId(rs.getInt("stock_id1"));
-			doc.setStockId2(rs.getInt("stock_id2"));
+			Integer idStock2 = rs.getInt("stock_id2");
+			doc.setStockId2(rs.wasNull() ? null : idStock2);
 			doc.setStockName(rs.getString("stock1_name"));
 			doc.setStock2Name(rs.getString("stock2_name"));
 			doc.setOrders(orderDao.getOrdersByDoc(doc.getId()));
@@ -81,9 +83,20 @@ public class OrderDocDaoImpl implements OrderDocDao{
 	}
 
 	@Override
+	public List<OrderDoc> getDocs() {
+		return getDocs("");
+	}
+
+	@Override
 	public OrderDoc getDocumentById(String documentId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<OrderDoc> docs = getDocs(" and d.id=" + documentId);
+		return (docs.size() > 0) ? docs.get(0) : null;
+	}
+
+	@Override
+	public List<OrderDoc> getDocs(List<String> viewstocks) {
+		String viewStocks = viewstocks.stream().collect(Collectors.joining(","));
+		return getDocs(" and (stock_id1 in (" + viewStocks + ") or stock_id2 in(" + viewStocks + "))");
 	}
 
 

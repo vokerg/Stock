@@ -42,7 +42,7 @@ public class OrderDocController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
 		if (!userService.isAllowedToSeeStock(sharedUser, doc.getStockId())
-				|| !userService.isAllowedToSeeStock(sharedUser, doc.getStockId2())) {
+				&& !userService.isAllowedToSeeStock(sharedUser, doc.getStockId2())) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 		}
 		int newDocId = docDao.addDoc(doc);
@@ -53,7 +53,11 @@ public class OrderDocController {
 
 
 	@GetMapping("")
-	public List<OrderDoc> getAllDocs() {
-		return docDao.getDocs();
+	public ResponseEntity<List<OrderDoc>> getAllDocs(@RequestHeader(value = "idUser", required = false) String idUser) throws JsonParseException, JsonMappingException, IOException {
+		SharedUser sharedUser = (idUser != null) ? userService.getSharedUser(idUser) : null;
+		if ((idUser != null) && (sharedUser == null)) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
+		return ResponseEntity.ok((sharedUser == null) ? docDao.getDocs() : docDao.getDocs(sharedUser.getViewstocks()));
 	}
 }

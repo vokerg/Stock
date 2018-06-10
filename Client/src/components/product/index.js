@@ -29,12 +29,11 @@ class Product extends React.Component {
   render() {
     const {id} = this.props.match.params;
     const {history} = this.props;
-    console.log(this.state)
     return (
       <div>
         <ProductView id={id} name={this.state.name} />
         <ProductRests stockRests={this.state.productRests}/>
-        <OrdersView redirectUnauthorized={() => history.push('/login')}/>
+        <OrdersView productId={id} redirectUnauthorized={() => history.push('/login')}/>
       </div>
     )
   }

@@ -16,6 +16,7 @@ const getOrders = params => next =>
 
 
 export const getOrdersForStock = stockId => next => getOrders(`?stockId=${stockId}`)(next);
+export const getOrdersForProduct = productId => next => getOrders(`?productId=${productId}`)(next);
 export const getOrdersForDoc = documentId => next => getOrders(`?documentId=${documentId}`)(next);
 export const getAllOrders = next => getOrders('/')(next);
 
