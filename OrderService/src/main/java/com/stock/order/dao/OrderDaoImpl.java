@@ -24,7 +24,9 @@ public class OrderDaoImpl implements OrderDao {
 			"from stock_order so\n" + 
 			"left join product p on p.id = so.product_id\n" + 
 			"left join stock s1 on s1.id = so.stock_id1\n" + 
-			"left join stock s2 on s2.id = so.stock_id2";
+			"left join stock s2 on s2.id = so.stock_id2\n" +
+			"where 1=1";
+			
 	private static final String INSERT_STOCK_ORDER = "insert into stock_order (date, stock_id1, stock_id2, qty, operation_type_id, product_id, status_id, document_id) values (?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final int STATUS_NEW = 0;
 	
@@ -90,43 +92,63 @@ public class OrderDaoImpl implements OrderDao {
 	
 	@Override
 	public List<Order> getOrdersByProductIdAndStockId(String productId, String stockId){
-		return getOrders(SELECT_ALL_ORDERS + " where product_id = " + productId + " and stock_id = " + stockId);
+		return getOrders(SELECT_ALL_ORDERS + getSubQueryByProductId(productId) + getSubQueryByStockId(stockId));
 	}
 
 	@Override
 	public List<Order> getOrdersByProductId(String productId) {
-		return getOrders(SELECT_ALL_ORDERS + " where product_id = " + productId);
+		return getOrders(SELECT_ALL_ORDERS + getSubQueryByProductId(productId));
 	}
 
 	@Override
 	public List<Order> getOrdersByStock(String stockId){
-		return getOrders(SELECT_ALL_ORDERS + " where stock_id = " + stockId);
+		return getOrders(SELECT_ALL_ORDERS + getSubQueryByStockId(stockId));
 	}
 
 
 	@Override
 	public Order getOrderById(String id) {
-		List<Order> orders = getOrders(SELECT_ALL_ORDERS + " where id=" + id);
+		List<Order> orders = getOrders(SELECT_ALL_ORDERS + " and id=" + id);
 		return (orders.size() > 0) ? orders.get(0) : null;
 	}
 
 	@Override
 	public List<Order> getOrdersByDoc(int docId) {
-		return getOrders(SELECT_ALL_ORDERS + " where document_id = " + String.valueOf(docId));
+		return getOrders(SELECT_ALL_ORDERS + getSubQueryByDocumentId(String.valueOf(docId)));
 	}
-
+	
 	@Override
-	public List<Order> getOrdersByProductIdAndStockList(String productId, List<String> viewstocks) {
-		return getOrders(SELECT_ALL_ORDERS + " where product_id = " + productId + " and " + getOrdersByStockListSql(viewstocks));
+	public List<Order> getFilteredOrders(String productId, String stockId, String documentId, List<String> viewstocks) {
+		String sql = SELECT_ALL_ORDERS;
+		if (productId != null) {
+			sql += getSubQueryByProductId(productId);
+		}
+		if (stockId != null) {
+			sql += getSubQueryByStockId(stockId);
+		}
+		if (documentId != null) {
+			sql += getSubQueryByDocumentId(documentId);
+		}
+		if (viewstocks != null) {
+			sql += getSubQueryByStockList(viewstocks);
+		}
+		return getOrders(sql);
 	}
 
-	@Override
-	public List<Order> getOrdersByStockList(List<String> viewstocks) {
-		return getOrders(SELECT_ALL_ORDERS + " where " + getOrdersByStockListSql(viewstocks));
+	private String getSubQueryByProductId(String productId) {
+		return " and product_id=" + productId;
 	}
 
-	private String getOrdersByStockListSql(List<String> viewstocks) {
+	private String getSubQueryByStockList(List<String> viewstocks) {
 		String viewStocks = viewstocks.stream().collect(Collectors.joining(","));
 		return "(stock_id1 in (" + viewStocks + ") or stock_id2 in(" + viewStocks + "))";
+	}
+	
+	private String getSubQueryByStockId(String stockId) {
+		return " and (stock_id1=" + stockId + " or stock_id2=" + stockId + ")";
+	}
+	
+	private String getSubQueryByDocumentId(String documentId) {
+		return " and document_id=" + documentId;
 	}
 }

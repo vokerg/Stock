@@ -1,8 +1,8 @@
 import { authorization } from './token.js'
 
-export const getOrders = next =>
+const getOrders = params => next =>
   fetch(
-    '/orders/orders/', {
+    `/orders/orders${params}`, {
       headers: {...authorization()}
     }
   )
@@ -13,6 +13,11 @@ export const getOrders = next =>
     throw Error(response.statusText);
   })
   .then(orders => next(orders));
+
+
+export const getOrdersForStock = stockId => next => getOrders(`?stockId=${stockId}`)(next);
+export const getOrdersForDoc = documentId => next => getOrders(`?documentId=${documentId}`)(next);
+export const getAllOrders = next => getOrders('/')(next);
 
 export const getOperationTypes = next =>
   fetch('/orders/operationTypes/', {headers:{...authorization()}})

@@ -33,7 +33,7 @@ class Stock extends React.Component {
       <div>
         <StockView id={id} name={this.state.name} />
         <StockRests stockRests={this.state.stockRests}/>
-        <OrdersView redirectUnauthorized={() => history.push('/login')}/>
+        <OrdersView stockId={id} redirectUnauthorized={() => history.push('/login')}/>
       </div>
     )
   }

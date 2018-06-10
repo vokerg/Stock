@@ -80,6 +80,12 @@ public class OrderDocDaoImpl implements OrderDocDao{
 		});
 	}
 
+	@Override
+	public OrderDoc getDocumentById(String documentId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 }

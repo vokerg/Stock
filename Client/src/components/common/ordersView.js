@@ -9,7 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import { getOrders } from '../../api/ordersApi';
+import { getAllOrders, getOrdersForDoc, getOrdersForStock } from '../../api/ordersApi';
 
 class OrdersView extends React.Component {
 
@@ -21,25 +21,27 @@ class OrdersView extends React.Component {
   }
 
   componentDidMount() {
-    const {match} = this.props;
-    let stockId = (match !== undefined) ? match.params.stockId : undefined
-    if (stockId === undefined) {
-      getOrders(orders => this.setState({
-        orders
-      }))
+    let {match, documentId, stockId, isShort} = this.props;
+    stockId = (match !== undefined) ? match.params.stockId : (stockId !== undefined) ? stockId : undefined
+    if (stockId !== undefined) {
+      getOrdersForStock(stockId)(orders => this.setState({orders}))
+      .catch(error => this.props.redirectUnauthorized());
+    } else if (documentId !== undefined) {
+      getOrdersForDoc(documentId)(orders => this.setState({orders}))
       .catch(error => this.props.redirectUnauthorized());
     } else {
-
+      getAllOrders(orders => this.setState({orders}))
+      .catch(error => this.props.redirectUnauthorized());
     }
   }
 
   render() {
-    console.log(this.state.orders)
+    const { isShort } = this.props;
     return (
       <div>
-        <div>Recent orders</div>
         <Paper>
           <Table>
+            {(isShort===undefined) &&
             <TableHead>
               <TableRow>
                 <TableCell>Document ID</TableCell>
@@ -49,14 +51,14 @@ class OrdersView extends React.Component {
                 <TableCell>QTY</TableCell>
               </TableRow>
             </TableHead>
-
+          }
             <TableBody>
               {this.state.orders.map(order =>
                   <TableRow key={order.id}>
                     <TableCell>{order.document_id}</TableCell>
-                    <TableCell>{order.operationTypeName}</TableCell>
+                    {(isShort===undefined) && <TableCell>{order.operationTypeName}</TableCell>}
                     <TableCell><Link to={`/products/${order.productId}`}>{order.productName}</Link></TableCell>
-                    <TableCell><Link to={`/products/${order.stockId}`}>{order.stocksName}</Link></TableCell>
+                    {(isShort===undefined) && <TableCell><Link to={`/stocks/${order.stockId}`}>{order.stocksName}</Link></TableCell>}
                     <TableCell numeric>{order.qty}</TableCell>
                   </TableRow>
               )}

@@ -8,6 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import { getDocs } from '../../api/ordersApi';
+import SingleDocView from './singleDocView';
 
 class DocsView extends React.Component {
   constructor() {
@@ -22,7 +23,6 @@ class DocsView extends React.Component {
   }
 
   render() {
-    console.log(this.state.docs)
     return (
       <Paper>
         <Table>
@@ -37,10 +37,9 @@ class DocsView extends React.Component {
           <TableBody>
             {this.state.docs.map((doc, key) =>
               <TableRow key={key}>
-                <TableCell>{doc.id}</TableCell>
-                <TableCell>{doc.operationTypeName}</TableCell>
-                <TableCell>{doc.stocksName}</TableCell>
-                <TableCell>{doc.orders.length}</TableCell>
+                <TableCell colSpan={4}>
+                  <SingleDocView doc={doc}/>
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.stock.order.dao.OrderDao;
+import com.stock.order.dao.OrderDocDao;
 import com.stock.order.model.Order;
+import com.stock.order.model.OrderDoc;
 import com.stock.order.model.SharedUser;
 import com.stock.order.service.UserService;
 
@@ -35,6 +37,9 @@ public class OrderController {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	OrderDocDao docDao;
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Order> getOrder(@RequestHeader(value = "idUser", required = false) String idUser,
@@ -55,7 +60,8 @@ public class OrderController {
 	public ResponseEntity<List<Order>> getOrders(@RequestHeader(value = "idUser", required = false) String idUser,
 			@RequestParam(value = "productId", required = false) String productId,
 			@RequestParam(value = "stockId", required = false) String stockId,
-			@RequestParam(value = "paramUserId", required = false) String paramUserId)
+			@RequestParam(value = "paramUserId", required = false) String paramUserId,
+			@RequestParam(value = "documentId", required = false) String documentId)
 			throws JsonParseException, JsonMappingException, IOException {
 		SharedUser sharedUser = (idUser != null) ? userService.getSharedUser(idUser)
 				: (paramUserId != null) ? userService.getSharedUser(idUser) : null;
@@ -66,22 +72,18 @@ public class OrderController {
 		if ((sharedUser != null) && (stockId != null) && (!sharedUser.getViewstocks().contains(stockId))) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 		}
-
-		if ((productId != null) && (stockId != null)) {
-			return ResponseEntity.ok(orderDao.getOrdersByProductIdAndStockId(productId, stockId));
+		
+		if (documentId != null) {
+			OrderDoc doc = docDao.getDocumentById(documentId);
+			if (doc == null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+			}
+			if (!sharedUser.getViewstocks().contains(String.valueOf(doc.getStockId())) && !sharedUser.getViewstocks().contains(String.valueOf(doc.getStockId2()))) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+			}
 		}
-
-		if (productId != null) {
-			List<Order> orders = (sharedUser == null) ? orderDao.getOrdersByProductId(productId)
-					: orderDao.getOrdersByProductIdAndStockList(productId, sharedUser.getViewstocks());
-			return ResponseEntity.ok(orders);
-		}
-
-		if (stockId != null) {
-			return ResponseEntity.ok(orderDao.getOrdersByStock(stockId));
-		}
-		List<Order> orders = (sharedUser == null) ? orderDao.getAllOrders()
-				: orderDao.getOrdersByStockList(sharedUser.getViewstocks());
+		
+		List<Order> orders = orderDao.getFilteredOrders(productId, stockId, documentId, sharedUser != null ? sharedUser.getViewstocks() : null);
 		return ResponseEntity.ok(orders);
 	}
 
