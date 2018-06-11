@@ -21,7 +21,7 @@ class OrdersView extends React.Component {
   }
 
   componentDidMount() {
-    let {match, documentId, stockId, productId, isShort} = this.props;
+    let {match, documentId, stockId, productId} = this.props;
     stockId = (match !== undefined) ? match.params.stockId : (stockId !== undefined) ? stockId : undefined
     if (stockId !== undefined) {
       getOrdersForStock(stockId)(orders => this.setState({orders}))

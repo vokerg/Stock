@@ -1,6 +1,5 @@
 package com.stock.order.dao;
 
-
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -95,10 +94,10 @@ public class OrderDocDaoImpl implements OrderDocDao{
 
 	@Override
 	public List<OrderDoc> getDocs(List<String> viewstocks) {
+		if (viewstocks.size() == 0) {
+			return getDocs("");
+		}
 		String viewStocks = viewstocks.stream().collect(Collectors.joining(","));
 		return getDocs(" and (stock_id1 in (" + viewStocks + ") or stock_id2 in(" + viewStocks + "))");
 	}
-
-
-
 }

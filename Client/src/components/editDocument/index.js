@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { getStocks } from '../api/stockApi';
-import { getProducts } from '../api/productApi';
-import { getOperationTypes, insertDoc } from '../api/ordersApi';
+import { getStocks } from '../../api/stockApi';
+import { getProducts } from '../../api/productApi';
+import { getOperationTypes, insertDoc } from '../../api/ordersApi';
 import EditDocumentView from './editDocumentView';
 
 class EditDocument extends React.Component {
@@ -59,7 +59,7 @@ class EditDocument extends React.Component {
 
   submitDocument = event => {
     event.preventDefault();
-    const {orders, selectedStock, selectedOperationType, transfer} = this.state;
+    const {orders, selectedStock, selectedStock2, selectedOperationType, transfer} = this.state;
 
     let document = {
       stockId: selectedStock,
@@ -84,9 +84,11 @@ class EditDocument extends React.Component {
         selectedStock = {this.state.selectedStock}
         selectedStock2 = {this.state.selectedStock2}
         orders = {this.state.orders}
+        stocks={this.state.stocks}
+        stocks2={this.state.stocks2}
         products = {this.state.products}
         transfer = {this.stock.transfer}
-        submitDocument = {this.submitDocument},
+        submitDocument = {this.submitDocument}
         operationTypeChange = {this.operationTypeChange}
         stockChange = {this.stockChange}
         orderLineChange = {this.orderLineChange}

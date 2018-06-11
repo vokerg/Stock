@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
-import logo from './logo.svg';
 import Stocks from './components/stocks';
 import EditStock from './components/editStock';
 import Stock from './components/stock';
@@ -25,6 +24,7 @@ const Routes = (props) => {
         <Route exact path="/products" component= {Products} />
         <Route exact path="/products/:id" component= {Product} />
         <Route exact path="/products/:id/edit" component= {EditProduct} />
+        <Route exact path="/createproduct" component= {EditProduct} />
         <Route exact path="/orders" component= {Orders} />
         <Route exact path="/createstock" component= {EditStock} />
         <Route exact path="/stocks/:id" component= {Stock} />

@@ -143,6 +143,9 @@ public class OrderDaoImpl implements OrderDao {
 	}
 
 	private String getSubQueryByStockList(List<String> viewstocks) {
+		if (viewstocks.size() == 0) {
+			return "";
+		}
 		String viewStocks = viewstocks.stream().collect(Collectors.joining(","));
 		return " and (stock_id1 in (" + viewStocks + ") or stock_id2 in(" + viewStocks + "))";
 	}

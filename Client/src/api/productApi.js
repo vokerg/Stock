@@ -25,6 +25,7 @@ export const insertProduct = product => next =>
         ...authorization()
       }
   })
+  .then(response => response.json())
   .then(product => next(product));
 
   export const updateProduct = product => next =>

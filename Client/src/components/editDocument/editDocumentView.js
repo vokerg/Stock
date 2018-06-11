@@ -6,6 +6,8 @@ const EditDocumentView = ({
   selectedStock,
   selectedStock2,
   orders,
+  stocks,
+  stocks2,
   products,
   transfer,
   submitDocument,
@@ -37,7 +39,7 @@ const EditDocumentView = ({
             <td>
               <select value={selectedStock2} name="selectedStock2" onChange={stockChange} disabled={!transfer}>
                 <option value="0"></option>
-                {stocks.map((element, key) =>
+                {stocks2.map((element, key) =>
                   <option key={key}>{element.name}</option>
                 )}
               </select>
@@ -81,4 +83,4 @@ const EditDocumentView = ({
   )
 }
 
-export const EditDocumentView;
+export default EditDocumentView;
