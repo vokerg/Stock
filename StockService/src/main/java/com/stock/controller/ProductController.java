@@ -57,10 +57,11 @@ public class ProductController {
 			@PathVariable String id) throws JsonParseException, JsonMappingException, IOException {
 		if (idUser != null) {
 			SharedUser user = userService.getSharedUser(idUser);
-			return stockRestRepository.findByProductAndStockIdIn(productRepository.findById(Long.valueOf(id)),
-					user.getViewstocks().stream().map(stockId -> Long.valueOf(stockId)).collect(Collectors.toList()));
+			Product product = productRepository.findById(Long.valueOf(id));
+			return user.isAdmin() 
+					? stockRestRepository.findByProduct(product) 
+					: stockRestRepository.findByProductAndStockIdIn(product, user.getViewstocks().stream().map(stockId -> Long.valueOf(stockId)).collect(Collectors.toList()));
 		}
-
 		return stockRestRepository.findByProduct(productRepository.findById(Long.valueOf(id)));
 	}
 

@@ -1,13 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
 
 const ProductView = ({id, name}) => {
   return (
-    <div>
-      <span>{name}</span>..
-      <span><Link to={`/`}>List</Link></span>..
-      <span><Link to={`/products/${id}/edit`}>Edit</Link></span>
-    </div>
+    <Toolbar>
+      <div>{name}</div>
+      <Button href={'/products'}>List</Button>
+      <Button href={`/products/${id}/edit`}>Edit</Button>
+    </Toolbar>
   )
 }
 

@@ -63,27 +63,35 @@ public class OrderController {
 			@RequestParam(value = "paramUserId", required = false) String paramUserId,
 			@RequestParam(value = "documentId", required = false) String documentId)
 			throws JsonParseException, JsonMappingException, IOException {
+		
 		SharedUser sharedUser = (idUser != null) ? userService.getSharedUser(idUser)
 				: (paramUserId != null) ? userService.getSharedUser(idUser) : null;
+				
 		if ((idUser != null || paramUserId != null) && (sharedUser == null)) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
-
-		if ((sharedUser != null) && (stockId != null) && (!sharedUser.getViewstocks().contains(stockId))) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-		}
 		
+		OrderDoc doc = null;
 		if (documentId != null) {
-			OrderDoc doc = docDao.getDocumentById(documentId);
+			doc = docDao.getDocumentById(documentId);
 			if (doc == null) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 			}
-			if (!sharedUser.getViewstocks().contains(String.valueOf(doc.getStockId())) && !sharedUser.getViewstocks().contains(String.valueOf(doc.getStockId2()))) {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-			}
 		}
 		
-		List<Order> orders = orderDao.getFilteredOrders(productId, stockId, documentId, sharedUser != null ? sharedUser.getViewstocks() : null);
+		if (!sharedUser.isAdmin()) {
+			if ((sharedUser != null) && (stockId != null) && (!sharedUser.getViewstocks().contains(stockId))) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+			}
+			
+			if (doc != null) {
+				if (!sharedUser.getViewstocks().contains(String.valueOf(doc.getStockId())) && !sharedUser.getViewstocks().contains(String.valueOf(doc.getStockId2()))) {
+					return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+				}
+			}			
+		}
+		
+		List<Order> orders = orderDao.getFilteredOrders(productId, stockId, documentId, (sharedUser != null && !sharedUser.isAdmin()) ? sharedUser.getViewstocks() : null);
 		return ResponseEntity.ok(orders);
 	}
 
