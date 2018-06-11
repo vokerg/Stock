@@ -42,16 +42,28 @@ export const insertOrder = order => next =>
   })
   .then(response => next(response));
 
-  export const getDocs = next =>
-    fetch(
-      '/orders/docs/', {
-        headers: {...authorization()}
-      }
-    )
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      throw Error(response.statusText);
+export const getDocs = next =>
+  fetch(
+    '/orders/docs/', {
+      headers: {...authorization()}
+    }
+  )
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw Error(response.statusText);
+  })
+  .then(docs => next(docs));
+
+  export const insertDoc = doc => next =>
+    fetch('/orders/docs/', {
+        method: 'put',
+        body: JSON.stringify(doc),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          ...authorization()
+        }
     })
-    .then(docs => next(docs));
+    .then(response => next(response));
