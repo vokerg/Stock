@@ -13,11 +13,15 @@ import Product from './components/product';
 import EditDocument from './components/editDocument';
 import Documents from './components/documents';
 import './App.css';
+import mainReducer from './reducers';
 
-const Routes = (props) => {
+import { Provider, connect } from 'react-redux';
+import { createStore } from 'redux';
+
+const Routes = ({history}) => {
   return (
     <div>
-      <Navigator history={props.history}/>
+      <Navigator history={history}/>
       <div>
         <Route exact path="/" component= {Stocks} />
         <Route exact path="/stocks" component= {Stocks} />
@@ -38,14 +42,40 @@ const Routes = (props) => {
   )
 }
 
+class App1Component extends Component {
+  constructor(props) {
+    super(props);
+    const user = JSON.parse(localStorage.getItem('user'));
+    const authorization = localStorage.getItem('authorization');
+    this.props.loadFromLocalStorage(authorization, user);
+  }
+  render() {
+    return (
+      <BrowserRouter>
+        <Route path="/" component = {Routes} />
+      </BrowserRouter>
+    )
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+    loadFromLocalStorage: (authorization, user) => dispatch({
+      type: 'LOAD_FROM_LOCAL_STORAGE',
+      payload: {
+        authorization,
+        user
+      }
+    })
+})
+
+const App1 = connect(() => ({}), mapDispatchToProps)(App1Component);
+
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <BrowserRouter>
-          <Route path="/" component = {Routes} />
-        </BrowserRouter>
-      </div>
+        <Provider store= { createStore(mainReducer) }>
+          <App1/>
+        </Provider>
     );
   }
 }

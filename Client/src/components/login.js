@@ -22,7 +22,6 @@ class Login extends React.Component {
     login(this.state.username, this.state.password)(({token, status, ...user}) => {
       if (status === 200) {
         localStorage.setItem('authorization', token)
-        console.log(user)
         localStorage.setItem('user', JSON.stringify(user));
         this.props.history.push("/")
       } else {
