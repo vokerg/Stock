@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
+import { Provider, connect } from 'react-redux';
+import { createStore } from 'redux';
+
 import Stocks from './components/stocks';
 import EditStock from './components/editStock';
 import Stock from './components/stock';
@@ -14,9 +17,8 @@ import EditDocument from './components/editDocument';
 import Documents from './components/documents';
 import './App.css';
 import mainReducer from './reducers';
-
-import { Provider, connect } from 'react-redux';
-import { createStore } from 'redux';
+import middleware from './middleware';
+import { stateLogin } from './actions';
 
 const Routes = ({history}) => {
   return (
@@ -47,7 +49,7 @@ class App1Component extends Component {
     super(props);
     const user = JSON.parse(localStorage.getItem('user'));
     const authorization = localStorage.getItem('authorization');
-    this.props.loadFromLocalStorage(authorization, user);
+    this.props.stateLogin(authorization, user);
   }
   render() {
     return (
@@ -59,13 +61,7 @@ class App1Component extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-    loadFromLocalStorage: (authorization, user) => dispatch({
-      type: 'LOAD_FROM_LOCAL_STORAGE',
-      payload: {
-        authorization,
-        user
-      }
-    })
+    stateLogin: (authorization, user) => dispatch(stateLogin(authorization, user))
 })
 
 const App1 = connect(() => ({}), mapDispatchToProps)(App1Component);
@@ -73,7 +69,7 @@ const App1 = connect(() => ({}), mapDispatchToProps)(App1Component);
 class App extends Component {
   render() {
     return (
-        <Provider store= { createStore(mainReducer) }>
+        <Provider store= { createStore(mainReducer, middleware) }>
           <App1/>
         </Provider>
     );

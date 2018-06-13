@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -15,6 +16,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
+
+import { getCurrentUser } from '../reducers';
 
 const styles = {
   root: {
@@ -33,13 +36,12 @@ const styles = {
 };
 
 class Navigator extends React.Component  {
-  constructor() {
-    super();
-    const user = JSON.parse(localStorage.getItem('user'));
+  constructor(props) {
+    super(props);
+    const {user} = this.props;
     this.state={
       anchorEl: null,
-      drawer: false,
-      username: (user!=null) ? user.username : null
+      drawer: false
     };
   }
 
@@ -53,8 +55,9 @@ class Navigator extends React.Component  {
   }
 
   render() {
-    const {classes} = this.props;
-    const {anchorEl, drawer, username} = this.state;
+    const {classes, user} = this.props;
+    const {anchorEl, drawer} = this.state;
+    const username = (user !== null && user.username !== '') ? user.username : null
     const open = Boolean(anchorEl);
     return (
       <Paper className={classes.root}>
@@ -131,4 +134,12 @@ class Navigator extends React.Component  {
   }
 }
 
-export default withStyles(styles)(Navigator);
+const mapStateToProps = state => ({
+  user: getCurrentUser(state)
+});
+
+const mapDispatchToProps = dispatch => ({
+
+});
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Navigator));

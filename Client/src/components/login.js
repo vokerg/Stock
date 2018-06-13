@@ -1,5 +1,9 @@
 import React from 'react';
-import { login } from '../api/loginApi'
+import { connect } from 'react-redux';
+
+import { login } from '../api/loginApi';
+import { stateLogin } from '../actions';
+import { getCurrentUser } from '../reducers';
 
 class Login extends React.Component {
   constructor() {
@@ -23,7 +27,8 @@ class Login extends React.Component {
       if (status === 200) {
         localStorage.setItem('authorization', token)
         localStorage.setItem('user', JSON.stringify(user));
-        this.props.history.push("/")
+        this.props.stateLogin(token, user);
+        this.props.history.push("/");
       } else {
         this.setState({errorMessage: "Incorrect username or passowrd"})
       }
@@ -32,6 +37,9 @@ class Login extends React.Component {
 
   render() {
     return (
+      this.props.currentUser ?
+      <div>First logout...</div>
+      :
       <div>
         <form onSubmit={this.onSubmit.bind(this)}>
           <div>{this.state.errorMessage}</div>
@@ -50,4 +58,12 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+const mapStateToProps = state => ({
+  currentUser: getCurrentUser(state)
+})
+
+const mapDispatchToProps = dispatch => ({
+  stateLogin: (authorization, user) => dispatch(stateLogin(authorization, user))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
