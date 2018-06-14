@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.stock.auth.model.SharedUserWrapper;
 import com.stock.auth.model.User;
-import com.stock.auth.repository.UserRepository;
+import com.stock.auth.service.UserService;
 
 @RestController
 @RequestMapping("/users")
@@ -24,26 +24,26 @@ public class UsersController {
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
-	UserRepository userRepository;
+	UserService userService;
 	
 	@PostMapping("/signup")
 	public ResponseEntity<String> signUp(User user) {
-		if (userRepository.findByUsername(user.getUsername()) != null) {
+		if (userService.getUserByUsername(user.getUsername()) != null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
 		};
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-		userRepository.save(user);
+		userService.saveUser(user);
 		return ResponseEntity.ok(null);
 	}
 		
 	@GetMapping("/{userId}")
 	public SharedUserWrapper getUser(@PathVariable String userId) {
-		return SharedUserWrapper.wrapUser(userRepository.findById(userId));
+		return SharedUserWrapper.wrapUser(userService.getUserById(userId));
 	}
 	
 	@GetMapping("/{userId}/viewstocks")
 	public List<String> getViewStocks(@PathVariable String userId) {
-		User user = userRepository.findById(userId);
+		User user = userService.getUserById(userId);
 		return (user == null) ? new ArrayList<String>() : (user.getViewstocks() == null) ? new ArrayList<String>() : user.getViewstocks();
 	}
 }

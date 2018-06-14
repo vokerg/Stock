@@ -16,7 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.stock.auth.model.AuthorizedUser;
-import com.stock.auth.repository.UserRepository;
+import com.stock.auth.service.UserService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -24,11 +24,11 @@ import io.jsonwebtoken.Jwts;
 
 public class JwtAuthorizationFIlter extends BasicAuthenticationFilter {
 
-	private UserRepository userRepository;
+	private UserService userService;
 
-	public JwtAuthorizationFIlter(AuthenticationManager authenticationManager, UserRepository userRepository) {
+	public JwtAuthorizationFIlter(AuthenticationManager authenticationManager, UserService userService) {
 		super(authenticationManager);
-		this.userRepository = userRepository;
+		this.userService = userService;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class JwtAuthorizationFIlter extends BasicAuthenticationFilter {
 					String username = (String) claims.get("username");
 					String idUser = (String) claims.get("idUser");
 
-					if (userRepository.findById(idUser) != null) {
+					if (userService.getUserById(idUser) != null) {
 						Authentication authentication = new UsernamePasswordAuthenticationToken(
 								new AuthorizedUser(idUser, username), null, new ArrayList<GrantedAuthority>());
 						SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -10,13 +10,15 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
 import { getAllOrders, getOrdersForDoc, getOrdersForStock, getOrdersForProduct } from '../../api/ordersApi';
+import AccessDenied from '../common/accessDenied';
 
 class OrdersView extends React.Component {
 
   constructor() {
     super();
     this.state = {
-      orders: []
+      orders: [],
+      unauthorized: false
     }
   }
 
@@ -25,22 +27,25 @@ class OrdersView extends React.Component {
     stockId = (match !== undefined) ? match.params.stockId : (stockId !== undefined) ? stockId : undefined
     if (stockId !== undefined) {
       getOrdersForStock(stockId)(orders => this.setState({orders}))
-      .catch(error => this.props.redirectUnauthorized());
+      .catch(error => this.setState({unauthorized: true}));
     } else if (documentId !== undefined) {
       getOrdersForDoc(documentId)(orders => this.setState({orders}))
-      .catch(error => this.props.redirectUnauthorized());
+      .catch(error => this.setState({unauthorized: true}));
     } else  if (productId !== undefined) {
       getOrdersForProduct(productId)(orders => this.setState({orders}))
-      .catch(error => this.props.redirectUnauthorized());
+      .catch(error => this.setState({unauthorized: true}));
     } else {
       getAllOrders(orders => this.setState({orders}))
-      .catch(error => this.props.redirectUnauthorized());
+      .catch(error => this.setState({unauthorized: true}));
     }
   }
 
   render() {
     const { isShort } = this.props;
     return (
+      this.state.unauthorized ?
+      <AccessDenied/>
+      :
       <div>
         <Paper>
           <Table>

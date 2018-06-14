@@ -9,8 +9,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.stock.auth.repository.UserRepository;
 import com.stock.auth.service.StockUserDetailService;
+import com.stock.auth.service.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -23,7 +23,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
-	UserRepository userRepository;
+	UserService userService;
 	
 	
 	@Override
@@ -34,8 +34,8 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/tests/**").permitAll()
 		.antMatchers("/authorize/**").authenticated()
 		.and()
-		.addFilter(new JwtAuthenticationFilter(authenticationManager(), userRepository))
-		.addFilter(new JwtAuthorizationFIlter(authenticationManager(), userRepository))
+		.addFilter(new JwtAuthenticationFilter(authenticationManager(), userService))
+		.addFilter(new JwtAuthorizationFIlter(authenticationManager(), userService))
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 	

@@ -18,19 +18,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stock.auth.model.AuthenticatedUser;
 import com.stock.auth.model.SharedUserWrapper;
-import com.stock.auth.repository.UserRepository;
+import com.stock.auth.service.UserService;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
-	private UserRepository userRepository;
+	private UserService userService;
 	
-    JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
+    JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
     		super();
     		this.setAuthenticationManager(authenticationManager);
-    		this.userRepository = userRepository;
+    		this.userService = userService;
     }
     
 	@Override
@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	}
 
 	private String getSharedUserJson(AuthenticatedUser user) throws JsonProcessingException {
-		SharedUserWrapper sharedUser = SharedUserWrapper.wrapUser(userRepository.findById(user.getIdUser()));
+		SharedUserWrapper sharedUser = SharedUserWrapper.wrapUser(userService.getUserById(user.getIdUser()));
         ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(sharedUser);
 	}
