@@ -1,8 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 import { getProduct, getProductRests } from '../../api/productApi';
 import ProductView from './productView';
 import ProductRests from './productRest';
 import OrdersView from '../common/ordersView';
+import { getCurrentUser } from '../../reducers';
 
 class Product extends React.Component {
   constructor() {
@@ -28,15 +31,18 @@ class Product extends React.Component {
 
   render() {
     const {id} = this.props.match.params;
-    const {history} = this.props;
+    const {history, user} = this.props;
+    const isAllowedProductEdit = user !== null ? user.isAllowedProductEdit : false;
     return (
       <div>
-        <ProductView id={id} name={this.state.name} />
+        <ProductView id={id} name={this.state.name} isAllowedProductEdit={isAllowedProductEdit}/>
         <ProductRests stockRests={this.state.productRests}/>
-        <OrdersView productId={id} redirectUnauthorized={() => history.push('/login')}/>
+        <OrdersView productId={id}/>
       </div>
     )
   }
 }
 
-export default Product;
+const mapStateToProps = state => ({user: getCurrentUser(state)});
+
+export default connect(mapStateToProps, () => ({}))(Product);

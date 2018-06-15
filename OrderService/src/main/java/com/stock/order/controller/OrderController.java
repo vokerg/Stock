@@ -23,6 +23,8 @@ import com.stock.order.dao.OrderDocDao;
 import com.stock.order.model.Order;
 import com.stock.order.model.OrderDoc;
 import com.stock.order.model.SharedUser;
+import com.stock.order.service.AccessForbidden;
+import com.stock.order.service.OrdersService;
 import com.stock.order.service.UserService;
 
 @RestController
@@ -40,6 +42,9 @@ public class OrderController {
 	
 	@Autowired
 	OrderDocDao docDao;
+	
+	@Autowired
+	OrdersService ordersService;
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Order> getOrder(@RequestHeader(value = "idUser", required = false) String idUser,
@@ -66,33 +71,32 @@ public class OrderController {
 		
 		SharedUser sharedUser = (idUser != null) ? userService.getSharedUser(idUser)
 				: (paramUserId != null) ? userService.getSharedUser(idUser) : null;
-				
-		if ((idUser != null || paramUserId != null) && (sharedUser == null)) {
+		if (!validateGetOrdersRequest(sharedUser, paramUserId, idUser, documentId)) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
+		
+		try {
+			List<Order> orders = ordersService.getOrders(sharedUser, productId, stockId, documentId);
+			return ResponseEntity.ok(orders);
+		} catch (AccessForbidden e) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+		}
+	}
+
+	private boolean validateGetOrdersRequest(SharedUser sharedUser, String paramUserId, String idUser,
+			String documentId) {
+		if ((idUser != null || paramUserId != null) && (sharedUser == null)) {
+			return false;
 		}
 		
 		OrderDoc doc = null;
 		if (documentId != null) {
 			doc = docDao.getDocumentById(documentId);
 			if (doc == null) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+				return false;
 			}
 		}
-		
-		if (!sharedUser.isAdmin()) {
-			if ((sharedUser != null) && (stockId != null) && (!sharedUser.getViewstocks().contains(stockId))) {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-			}
-			
-			if (doc != null) {
-				if (!sharedUser.getViewstocks().contains(String.valueOf(doc.getStockId())) && !sharedUser.getViewstocks().contains(String.valueOf(doc.getStockId2()))) {
-					return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-				}
-			}			
-		}
-		
-		List<Order> orders = orderDao.getFilteredOrders(productId, stockId, documentId, (sharedUser != null && !sharedUser.isAdmin()) ? sharedUser.getViewstocks() : null);
-		return ResponseEntity.ok(orders);
+		return true;
 	}
 
 	@PutMapping("")

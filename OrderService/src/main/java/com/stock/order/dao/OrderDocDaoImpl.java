@@ -94,10 +94,7 @@ public class OrderDocDaoImpl implements OrderDocDao{
 
 	@Override
 	public List<OrderDoc> getDocs(List<String> viewstocks) {
-		if (viewstocks.size() == 0) {
-			return getDocs("");
-		}
-		String viewStocks = viewstocks.stream().collect(Collectors.joining(","));
+		String viewStocks = (viewstocks.size() != 0) ? viewstocks.stream().collect(Collectors.joining(",")) : "-1";
 		return getDocs(" and (stock_id1 in (" + viewStocks + ") or stock_id2 in(" + viewStocks + "))");
 	}
 }

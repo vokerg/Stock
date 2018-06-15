@@ -50,8 +50,6 @@ public class OrderDocController {
 		return ResponseEntity.ok(newDocId);
 	}
 
-
-
 	@GetMapping("")
 	public ResponseEntity<List<OrderDoc>> getAllDocs(@RequestHeader(value = "idUser", required = false) String idUser) throws JsonParseException, JsonMappingException, IOException {
 		SharedUser sharedUser = (idUser != null) ? userService.getSharedUser(idUser) : null;
