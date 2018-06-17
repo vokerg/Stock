@@ -14,7 +14,7 @@ let stockDb = null;
 
 const client = new Eureka({
   instance: {
-    app: 'metadataservice',
+    app: 'STOCK_METADATA',
     hostName: 'localhost',
     ipAddr: '127.0.0.1',
     port: {
@@ -49,25 +49,37 @@ const upload = multer({ storage: storage });
 
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.get('/upload', (req, res) => {
-  res.sendFile(__dirname + '/uploads/2f016c0c80f962f5505c5f67b08a4e23');
+app.get('/imagelist/product/:productId', (req, res) => {
+  const {productId} = req.params;
+  stockDb.collection('product_pictures').find({productId}).toArray((err, productPictures) => {
+    res.send(productPictures.map(pp => pp.filename));
+  });
 });
 
-app.post('/upload', upload.single('pic'), (req, res, next) => {
-  console.log(req.file.filename);
-  console.log(req.body.productId);
-  const {productId} = req.body;
-  console.log("productId", productId);
-  //const dbProductId = {_id: new ObjectId(productId)};
-  if (productId) {
-      stockDb.collection('product_pictures').insert({productId, filename: req.file.filename}, (err, result) => {
-        console.log(err);
-        return res.send(null);
-      });
-  } else {
-    return res.status(400).send("productId is not provided");
-  }
-  //res.send(null);
+app.get('/images/product/:productId/:pictureId', (req, res) => {
+  const {productId, pictureId} = req.params;
+  const pictureIdDb = {_id: new ObjectId(pictureId)};
+  stockDb.collection('product_pictures').findOne(pictureIdDb, (err, productPicture) => {
+    if (productPicture) {
+      res.sendFile(__dirname + '/uploads/' + productPicture.filename);
+    } else {
+      res.status(400).send(null);
+    }
+  });
+});
+
+app.get('/images/product/:productId', (req, res) => {
+  const {productId} = req.params;
+  stockDb.collection('product_pictures').find({productId}).toArray((err, productPictures) => {
+    res.sendFile(__dirname + '/uploads/' + productPictures[0].filename);
+  });
+});
+
+app.post('/images/product/:productId', upload.single('image'), (req, res) => {
+  const {productId} = req.params;
+  stockDb.collection('product_pictures').insert({productId, filename: req.file.filename}, (err, result) => {
+    return res.send(null);
+  });
 });
 
 const port = 8085;
