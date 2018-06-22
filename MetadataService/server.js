@@ -14,14 +14,15 @@ let stockDb = null;
 
 const client = new Eureka({
   instance: {
-    app: 'STOCK_METADATA',
+    app: 'stock-metadata',
+    instanceId: 'stock-metadata',
     hostName: 'localhost',
     ipAddr: '127.0.0.1',
     port: {
       '$': 8085,
       '@enabled': 'true',
     },
-    vipAddress: 'localhost',
+    vipAddress: 'stock-metadata',
     dataCenterInfo: {
       '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo',
       name: 'MyOwn',
@@ -52,12 +53,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.get('/imagelist/product/:productId', (req, res) => {
   const {productId} = req.params;
   stockDb.collection('product_pictures').find({productId}).toArray((err, productPictures) => {
-    res.send(productPictures.map(pp => pp.filename));
+    res.send(productPictures.map(pp => pp._id));
   });
 });
 
 app.get('/images/product/:productId/:pictureId', (req, res) => {
   const {productId, pictureId} = req.params;
+  console.log(productId, pictureId);
   const pictureIdDb = {_id: new ObjectId(pictureId)};
   stockDb.collection('product_pictures').findOne(pictureIdDb, (err, productPicture) => {
     if (productPicture) {
