@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { getProduct, getProductRests } from '../../api/productApi';
+import { getProductPictures, getProductPicture } from '../../api/metadataApi'
 import ProductView from './productView';
 import ProductRests from './productRest';
 import OrdersView from '../common/ordersView';
@@ -13,20 +14,19 @@ class Product extends React.Component {
     this.state = {
       id: 0,
       name: "",
-      productRests: []
+      productRests: [],
+      productPictureIds: [],
+      productPicture: ""
     };
   }
 
   componentDidMount() {
     const {id} = this.props.match.params;
-    getProduct(id)(product =>
-      getProductRests(id)(productRests =>
-        this.setState({
-          ...product,
-          productRests
-        })
-      )
-    );
+    getProduct(id)(product => {
+      this.setState({...product})
+      getProductRests(id)(productRests => this.setState({productRests}));
+      getProductPictures(id)(productPictureIds => this.setState({productPictureIds}));
+    });
   }
 
   render() {
@@ -35,7 +35,12 @@ class Product extends React.Component {
     const isAllowedProductEdit = user !== null ? user.isAllowedProductEdit : false;
     return (
       <div>
-        <ProductView id={id} name={this.state.name} isAllowedProductEdit={isAllowedProductEdit}/>
+        <ProductView
+          id={id}
+          name={this.state.name}
+          isAllowedProductEdit={isAllowedProductEdit}
+          productPictureIds={this.state.productPictureIds}
+        />
         <ProductRests stockRests={this.state.productRests}/>
         <OrdersView productId={id}/>
       </div>
