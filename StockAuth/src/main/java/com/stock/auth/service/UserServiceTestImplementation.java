@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.stock.auth.model.User;
 
-@Service
+//@Service
 public class UserServiceTestImplementation implements UserService{
 	
 	private static User user = getTestUser();

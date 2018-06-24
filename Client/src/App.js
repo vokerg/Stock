@@ -8,6 +8,7 @@ import Routes from './routes';
 import mainReducer from './reducers';
 import middleware from './middleware';
 import { stateLogin } from './actions';
+import { getConfiguredStore } from './storeProvider';
 
 class App extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ const mapDispatchToProps = dispatch => ({
 const AppWrapper = connect(() => ({}), mapDispatchToProps)(App);
 
 export default () => (
-  <Provider store={ createStore(mainReducer, middleware) }>
+  <Provider store={ getConfiguredStore() }>
     <AppWrapper/>
   </Provider>
 );

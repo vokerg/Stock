@@ -59,6 +59,7 @@ class EditProduct extends React.Component {
               value={this.state.name}
               onChange={this.onNameChange}
             />
+            <Button>Add image</Button>
             <Button type="submit">Save</Button>
           </Paper>
         </div>

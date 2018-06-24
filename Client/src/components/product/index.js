@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { getProduct, getProductRests } from '../../api/productApi';
-import { getProductPictures, getProductPicture } from '../../api/metadataApi'
+import { getProductPictures } from '../../api/metadataApi'
 import ProductView from './productView';
 import ProductRests from './productRest';
 import OrdersView from '../common/ordersView';
@@ -31,7 +31,7 @@ class Product extends React.Component {
 
   render() {
     const {id} = this.props.match.params;
-    const {history, user} = this.props;
+    const {user} = this.props;
     const isAllowedProductEdit = user !== null ? user.isAllowedProductEdit : false;
     return (
       <div>

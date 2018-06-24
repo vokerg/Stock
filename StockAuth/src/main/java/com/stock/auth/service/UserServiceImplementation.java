@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.stock.auth.model.User;
 import com.stock.auth.repository.UserRepository;
 
-//@Service
+@Service
 public class UserServiceImplementation implements UserService{
 
 	@Autowired
