@@ -79,6 +79,7 @@ app.get('/images/product/:productId', (req, res) => {
 
 app.post('/images/product/:productId', upload.single('image'), (req, res) => {
   const {productId} = req.params;
+  console.log("!!!!!!!!!!!", req.body, req.file, req);
   stockDb.collection('product_pictures').insert({productId, filename: req.file.filename}, (err, result) => {
     return res.send(null);
   });

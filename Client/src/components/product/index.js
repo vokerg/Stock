@@ -35,12 +35,12 @@ class Product extends React.Component {
     const isAllowedProductEdit = user !== null ? user.isAllowedProductEdit : false;
     return (
       <div>
-        <ProductView
-          id={id}
-          name={this.state.name}
-          isAllowedProductEdit={isAllowedProductEdit}
-          productPictureIds={this.state.productPictureIds}
-        />
+          <ProductView
+            id={id}
+            name={this.state.name}
+            isAllowedProductEdit={isAllowedProductEdit}
+            productPictureIds={this.state.productPictureIds}
+          />
         <ProductRests stockRests={this.state.productRests}/>
         <OrdersView productId={id}/>
       </div>

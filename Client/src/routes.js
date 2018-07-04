@@ -13,6 +13,7 @@ import EditProduct from './components/editProduct';
 import Product from './components/product';
 import EditDocument from './components/editDocument';
 import Documents from './components/documents';
+import ImageManagement from './components/product/imageManagement';
 
 const Routes = ({history}) => {
   return (
@@ -33,6 +34,7 @@ const Routes = ({history}) => {
         <Route exact path="/logout" component= {Logout} />
         <Route exact path="/documents" component= {Documents} />
         <Route exact path="/newdocument" component= {EditDocument} />
+        <Route exact path="/products/:id/imagemanagement" component= {ImageManagement} />
       </div>
     </div>
   )
