@@ -16,7 +16,6 @@ class Product extends React.Component {
       name: "",
       productRests: [],
       productPictureIds: [],
-      productPicture: ""
     };
   }
 

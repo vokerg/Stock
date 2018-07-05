@@ -45,7 +45,7 @@ const styles = theme => ({
   },
 });
 
-const PictureGalleryView = ({productPictureIds, imgDlgOpen, handleClose, imgDlgSrc, classes, handleClickOpen, imgPathStatic, isAllowedRemove}) => {
+const PictureGalleryView = ({productPictureIds, imgDlgOpen, handleClose, imgDlgSrc, classes, handleClickOpen, imgPathStatic, isAllowedRemove, removeImageClick}) => {
   return (
     <div>
       <div className={classes.root}>
@@ -57,7 +57,7 @@ const PictureGalleryView = ({productPictureIds, imgDlgOpen, handleClose, imgDlgS
                 {isAllowedRemove &&
                   <GridListTileBar
                     actionIcon={
-                      <IconButton className={classes.icon}>
+                      <IconButton className={classes.icon} onClick={removeImageClick(ppId)}>
                         <DeleteIcon/>
                       </IconButton>
                     }
