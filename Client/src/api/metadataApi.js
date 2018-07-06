@@ -15,8 +15,9 @@ export const addProductPicture = (productId, file) => next => {
 }
 
 export const removeProductImage = (productId, imageId) => next => {
+  console.log(productId, imageId)
   fetch(`/metadata/images/product/${productId}/${imageId}`,{
-    method: 'post',
+    method: 'delete',
     body: {}
   }).then (res => next(res))
 }

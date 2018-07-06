@@ -9,7 +9,9 @@ class PictureGallery extends React.Component {
     super();
     this.state = {
       imgDlgOpen: false,
-      imgDlgSrc: ''
+      imgDlgSrc: '',
+      confirmRemoveOpen: false,
+      pictureToRemove: ''
     }
   }
 
@@ -19,7 +21,14 @@ class PictureGallery extends React.Component {
     }
   }
   handleClose = () => this.setState({imgDlgOpen: false})
-  removeImageClick = ppId => () => this.props.deleteImage(ppId);
+  //removeImageClick = ppId => () => this.props.deleteImage(ppId);
+  removeImageClick = ppId => () => this.setState({confirmRemoveOpen: true, pictureToRemove: ppId})
+  confirmRemoveCancel = () => this.setState({confirmRemoveOpen: false, pictureToRemove: ''});
+  confirmRemoveOk = () => {
+    this.props.deleteImage(this.state.pictureToRemove);
+    this.setState({confirmRemoveOpen: false, pictureToRemove: ''});
+  }
+
 
   render() {
     const {imgPathStatic, productPictureIds, isAllowedRemove} = this.props;
@@ -32,7 +41,10 @@ class PictureGallery extends React.Component {
         handleClickOpen={this.handleClickOpen}
         imgPathStatic={imgPathStatic}
         isAllowedRemove={isAllowedRemove}
-        removeImageClick = {this.removeImageClick}
+        removeImageClick={this.removeImageClick}
+        confirmRemoveOpen={this.state.confirmRemoveOpen}
+        confirmRemoveCancel={this.confirmRemoveCancel}
+        confirmRemoveOk={this.confirmRemoveOk}
       />
     )
   }

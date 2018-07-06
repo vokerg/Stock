@@ -59,7 +59,6 @@ app.get('/imagelist/product/:productId', (req, res) => {
 
 app.get('/images/product/:productId/:pictureId', (req, res) => {
   const {productId, pictureId} = req.params;
-  console.log(productId, pictureId);
   const pictureIdDb = {_id: new ObjectId(pictureId)};
   stockDb.collection('product_pictures').findOne(pictureIdDb, (err, productPicture) => {
     if (productPicture) {
@@ -79,10 +78,16 @@ app.get('/images/product/:productId', (req, res) => {
 
 app.post('/images/product/:productId', upload.single('image'), (req, res) => {
   const {productId} = req.params;
-  console.log("!!!!!!!!!!!", req.body, req.file, req);
   stockDb.collection('product_pictures').insert({productId, filename: req.file.filename}, (err, result) => {
     return res.send(null);
   });
+});
+
+app.delete('/images/product/:productId/:pictureId', (req, res) => {
+  const {pictureId} = req.params;
+  const pictureIdDb = {_id: new ObjectId(pictureId)};
+  stockDb.collection('product_pictures').remove(pictureIdDb);
+  return res.send(null);
 });
 
 const port = 8085;

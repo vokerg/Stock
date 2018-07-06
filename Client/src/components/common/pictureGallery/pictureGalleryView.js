@@ -3,6 +3,9 @@ import { withStyles } from '@material-ui/core/styles';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
 
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -45,7 +48,20 @@ const styles = theme => ({
   },
 });
 
-const PictureGalleryView = ({productPictureIds, imgDlgOpen, handleClose, imgDlgSrc, classes, handleClickOpen, imgPathStatic, isAllowedRemove, removeImageClick}) => {
+const PictureGalleryView = ({
+  productPictureIds,
+  imgDlgOpen,
+  handleClose,
+  imgDlgSrc,
+  classes,
+  handleClickOpen,
+  imgPathStatic,
+  isAllowedRemove,
+  removeImageClick,
+  confirmRemoveOpen,
+  confirmRemoveCancel,
+  confirmRemoveOk
+}) => {
   return (
     <div>
       <div className={classes.root}>
@@ -70,6 +86,7 @@ const PictureGalleryView = ({productPictureIds, imgDlgOpen, handleClose, imgDlgS
           }
         </GridList>
       </div>
+
       <Dialog
         open={imgDlgOpen}
         onClose={handleClose}
@@ -80,6 +97,23 @@ const PictureGalleryView = ({productPictureIds, imgDlgOpen, handleClose, imgDlgS
         <img src={imgDlgSrc} className={classes.img} alt='' />
        </DialogContent>
       </Dialog>
+
+      <Dialog
+        open={confirmRemoveOpen}
+        onClose={confirmRemoveCancel}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">{"Are you sure you want to remove this picture?"}</DialogTitle>
+        <DialogActions>
+          <Button onClick={confirmRemoveCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={confirmRemoveOk} color="primary" autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </div>
   )
 }

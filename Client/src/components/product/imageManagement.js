@@ -22,9 +22,7 @@ class ImageManagement extends React.Component {
     addProductPicture(1, file)(res => console.log(res));
   }
 
-  deleteImage = productPictureId => {
-    removeProductImage(productPictureId)(() => console.log("removed"));
-  }
+  deleteImage = id => productPictureId => removeProductImage(id, productPictureId)(() => console.log("removed"));
 
   render() {
     const {id} = this.props.match.params;
@@ -34,7 +32,7 @@ class ImageManagement extends React.Component {
           productPictureIds={this.state.productPictureIds}
           imgPathStatic={`/metadata/images/product/${id}`}
           isAllowedRemove={true}
-          deleteImage={this.deleteImage}
+          deleteImage={this.deleteImage(id)}
         />
         <form >
           <input type="file"
