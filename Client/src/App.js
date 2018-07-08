@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { Provider, connect } from 'react-redux';
-import { createStore } from 'redux';
 
 import './App.css';
 import Routes from './routes';
-import mainReducer from './reducers';
-import middleware from './middleware';
 import { stateLogin } from './actions';
 import { getConfiguredStore } from './storeProvider';
 

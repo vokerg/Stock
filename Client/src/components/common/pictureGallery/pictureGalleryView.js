@@ -1,17 +1,14 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+
+import ConfirmDialog from '../confirmDialog';
 
 const styles = theme => ({
   gallery: {
@@ -68,7 +65,7 @@ const PictureGalleryView = ({
         <GridList className={classes.gridList} cols={4.5}>
           {productPictureIds && productPictureIds.length > 0 &&
             productPictureIds.map((ppId, key) =>
-              <GridListTile onClick={handleClickOpen(`${imgPathStatic}/${productPictureIds[key]}`)}>
+              <GridListTile key={key} onClick={handleClickOpen(`${imgPathStatic}/${productPictureIds[key]}`)}>
                 <img src={`${imgPathStatic}/${productPictureIds[key]}`} alt='' />
                 {isAllowedRemove &&
                   <GridListTileBar
@@ -98,22 +95,12 @@ const PictureGalleryView = ({
        </DialogContent>
       </Dialog>
 
-      <Dialog
-        open={confirmRemoveOpen}
-        onClose={confirmRemoveCancel}
-        aria-labelledby="responsive-dialog-title"
-      >
-        <DialogTitle id="responsive-dialog-title">{"Are you sure you want to remove this picture?"}</DialogTitle>
-        <DialogActions>
-          <Button onClick={confirmRemoveCancel} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={confirmRemoveOk} color="primary" autoFocus>
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
-
+      <ConfirmDialog
+        confirmRemoveOpen={confirmRemoveOpen}
+        confirmRemoveOk={confirmRemoveOk}
+        confirmRemoveCancel={confirmRemoveCancel}
+        confirmText={"Are you sure you want to remove this picture?"}
+      />
     </div>
   )
 }

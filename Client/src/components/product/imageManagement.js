@@ -1,4 +1,5 @@
 import React from 'react';
+import Input from '@material-ui/core/Input';
 import { addProductPicture } from '../../api/metadataApi';
 import PictureGallery from '../common/pictureGallery';
 import { getProductPictures, removeProductImage } from '../../api/metadataApi'
@@ -17,12 +18,16 @@ class ImageManagement extends React.Component {
     getProductPictures(id)(productPictureIds => this.setState({productPictureIds}));
   }
 
-  onFileUpload = (event) => {
+  onFileUpload = id => event => {
     const file = event.target.files[0];
-    addProductPicture(1, file)(res => console.log(res));
+    addProductPicture(id, file)(
+      () => getProductPictures(id)(productPictureIds => this.setState({productPictureIds}))
+    );
   }
 
-  deleteImage = id => productPictureId => removeProductImage(id, productPictureId)(() => console.log("removed"));
+  deleteImage = id => productPictureId => removeProductImage(id, productPictureId)(
+    () => getProductPictures(id)(productPictureIds => this.setState({productPictureIds}))
+  );
 
   render() {
     const {id} = this.props.match.params;
@@ -34,12 +39,9 @@ class ImageManagement extends React.Component {
           isAllowedRemove={true}
           deleteImage={this.deleteImage(id)}
         />
-        <form >
-          <input type="file"
-               id="image" name="image"
-               accept="image/png, image/jpeg" onChange={this.onFileUpload}/>
-          <button type="submit">Add</button>
-        </form>
+        <Input type="file"
+             id="image" name="image"
+             accept="image/png, image/jpeg" onChange={this.onFileUpload(id)}/>
       </div>
     )
   }
