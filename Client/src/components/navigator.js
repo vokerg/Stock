@@ -16,10 +16,12 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
+import Badge from '@material-ui/core/Badge';
 
-import { getCurrentUser } from '../reducers';
 
-const styles = {
+import { getCurrentUser, getDraftNames } from '../reducers';
+
+const styles = theme => ({
   root: {
     flexGrow: 1,
   },
@@ -32,8 +34,11 @@ const styles = {
   },
   list: {
     width: 250,
-  }
-};
+  },
+  padding: {
+    padding: `0 ${theme.spacing.unit * 2}px`,
+  },
+});
 
 class Navigator extends React.Component  {
   constructor(props) {
@@ -53,9 +58,13 @@ class Navigator extends React.Component  {
     this.closeMenu();
     this.redirect('logout')();
   }
+  draftClick = draftName => () => {
+    this.closeMenu();
+    this.redirect(`draftDocument/${draftName}`)();
+  }
 
   render() {
-    const {classes, user} = this.props;
+    const {classes, user, drafts} = this.props;
     const {anchorEl, drawer} = this.state;
     const username = (user !== null && user.username !== '') ? user.username : null
     const open = Boolean(anchorEl);
@@ -74,7 +83,12 @@ class Navigator extends React.Component  {
               {(username != null)
                 ?<div>
                   <IconButton aria-haspopup="true" color="inherit" onClick={this.handleMenu}>
-                    <AccountCircle/>
+                    {drafts.length > 0 ?
+                      <Badge className={classes.padding} badgeContent={drafts.length} color="secondary">
+                        <AccountCircle/>
+                      </Badge>
+                      : <AccountCircle/>
+                    }
                   </IconButton>
                   <Menu
                       anchorEl={anchorEl}
@@ -90,6 +104,9 @@ class Navigator extends React.Component  {
                       onClose = {this.closeMenu}
                     >
                       <MenuItem onClick={this.logout}>Logout</MenuItem>
+                      {drafts.map(draft =>
+                        <MenuItem key={draft} onClick={this.draftClick(draft)}>{draft}</MenuItem>
+                      )}
                     </Menu>
                   </div>
                   :<div>
@@ -135,7 +152,8 @@ class Navigator extends React.Component  {
 }
 
 const mapStateToProps = state => ({
-  user: getCurrentUser(state)
+  user: getCurrentUser(state),
+  drafts: getDraftNames(state)
 });
 
 const mapDispatchToProps = dispatch => ({

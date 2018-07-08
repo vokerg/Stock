@@ -1,8 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import { getStocks } from '../../api/stockApi';
 import { getProducts } from '../../api/productApi';
 import { getOperationTypes, insertDoc } from '../../api/ordersApi';
+import { saveDraftDocument } from '../../actions';
 import EditDocumentView from './editDocumentView';
 
 class EditDocument extends React.Component {
@@ -76,25 +78,43 @@ class EditDocument extends React.Component {
     insertDoc(document)(() => console.log("order added!"));
   }
 
+  saveDraftDocument = event => {
+    event.preventDefault();
+    const {transfer, selectedStock, selectedStock2, selectedOperationType, orders} = this.state;
+    this.props.saveDraftDocument(transfer, selectedStock, selectedStock2, selectedOperationType, orders);
+    this.props.history.push('/')
+  }
+
   render() {
     return (
       <EditDocumentView
         selectedOperationType = {this.state.selectedOperationType}
-        operationTypes = {this.state.operationType}
+        operationTypes = {this.state.operationTypes}
         selectedStock = {this.state.selectedStock}
         selectedStock2 = {this.state.selectedStock2}
         orders = {this.state.orders}
         stocks={this.state.stocks}
         stocks2={this.state.stocks2}
         products = {this.state.products}
-        transfer = {this.stock.transfer}
+        transfer = {this.state.transfer}
         submitDocument = {this.submitDocument}
         operationTypeChange = {this.operationTypeChange}
         stockChange = {this.stockChange}
         orderLineChange = {this.orderLineChange}
+        addNewOrderLine = {this.addNewOrderLine}
+        saveDraftDocument = {this.saveDraftDocument}
       />
     )
   }
 }
 
-export default EditDocument;
+const mapStateToProps = state => ({
+
+});
+
+const mapDispatchToProps = dispatch => ({
+  saveDraftDocument: (transfer, selectedStock, selectedStock2, selectedOperationType, orders) =>
+    dispatch(saveDraftDocument(transfer, selectedStock, selectedStock2, selectedOperationType, orders))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditDocument);

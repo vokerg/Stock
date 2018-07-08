@@ -34,6 +34,7 @@ const Routes = ({history}) => {
         <Route exact path="/logout" component= {Logout} />
         <Route exact path="/documents" component= {Documents} />
         <Route exact path="/newdocument" component= {EditDocument} />
+        <Route exact path="/draftdocument/:draftName" component= {EditDocument} />
         <Route exact path="/products/:id/imagemanagement" component= {ImageManagement} />
       </div>
     </div>

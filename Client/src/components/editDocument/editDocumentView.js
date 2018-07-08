@@ -13,7 +13,9 @@ const EditDocumentView = ({
   submitDocument,
   operationTypeChange,
   stockChange,
-  orderLineChange
+  orderLineChange,
+  addNewOrderLine,
+  saveDraftDocument
 }) => {
   return (
     <form onSubmit={submitDocument}>
@@ -51,12 +53,12 @@ const EditDocumentView = ({
                 <td>
                   {
                     (key === orders.length - 1) ?
-                    <button onClick={() => this.addNewOrderLine()}>Add line</button> :
+                    <button onClick={() => addNewOrderLine()}>Add line</button> :
                     <div/>
                   }
                 </td>
                 <td>
-                  <select name="idProduct" value = {order.idProduct} onChange = {this.orderLineChange(key)}>
+                  <select name="idProduct" value = {order.idProduct} onChange = {orderLineChange(key)}>
                     <option value="0"></option>
                     {products.map(element =>
                       <option key={element.id} value={element.id}>{element.name}</option>
@@ -75,6 +77,7 @@ const EditDocumentView = ({
             )
           }
           <tr>
+            <td><button onClick = {saveDraftDocument}>Save draft</button></td>
             <td><button type="submit">Submit</button></td>
           </tr>
         </tbody>
