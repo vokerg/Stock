@@ -21,7 +21,7 @@ export const saveDraftDocument = (transfer, selectedStock, selectedStock2, selec
   }
 });
 
-export const clearDraft = draftDocumentId => ({
+export const clearDraft = draftId => ({
   type: 'CLEAR_DRAFT',
-  payload: {draftDocumentId}
+  payload: {draftId}
 });

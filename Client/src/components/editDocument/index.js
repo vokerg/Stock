@@ -4,8 +4,11 @@ import { connect } from 'react-redux';
 import { getStocks } from '../../api/stockApi';
 import { getProducts } from '../../api/productApi';
 import { getOperationTypes, insertDoc } from '../../api/ordersApi';
-import { saveDraftDocument } from '../../actions';
+import { saveDraftDocument, clearDraft } from '../../actions';
+import { getDraft } from '../../reducers';
 import EditDocumentView from './editDocumentView';
+import EditOrdersView from './editOrdersView';
+import EditButtons from './editButtons';
 
 class EditDocument extends React.Component {
   constructor() {
@@ -27,6 +30,10 @@ class EditDocument extends React.Component {
     getStocks(stocks => this.setState({stocks, stocks2:stocks}));
     getProducts(products => this.setState({products}));
     getOperationTypes(operationTypes => this.setState({operationTypes}));
+    const {draft} = this.props;
+    if (draft) {
+      this.setState({...draft});
+    }
   }
 
   getNewOrderLine = () => ({
@@ -38,25 +45,23 @@ class EditDocument extends React.Component {
     orders: [...this.state.orders, this.getNewOrderLine()]
   })
 
-  operationTypeChange = event => {
-    const selectedOperationType = event.target.value;
-    this.setState({selectedOperationType})
-    this.state.operationTypes.forEach(operationType => {
-      const transfer = ((operationType.id.toString() === selectedOperationType) && (operationType.fTransfer));
-      this.setState({transfer})
-    })
+  operationTypeChange = ({target: input}) => {
+    this.setState({selectedOperationType: input.value})
+    this.state.operationTypes
+      .filter(({id}) => id.toString() === input.value)
+      .forEach(({fTransfer: transfer}) => this.setState({ transfer }));
   }
 
-  orderLineChange = key => event =>
+  orderLineChange = key => ({target: input}) =>
     this.setState({
       orders: this.state.orders.map(
-        (order, arrayKey) => (arrayKey === key) ? {...order, [event.target.name]:event.target.value} : order
+        (order, arrayKey) => (arrayKey === key) ? {...order, [input.name]:input.value} : order
       )
     })
 
-  stockChange = event =>
+  stockChange = ({target: input}) =>
     this.setState({
-      [event.target.name]: event.target.value
+      [input.name]: input.value
     })
 
   submitDocument = event => {
@@ -82,39 +87,57 @@ class EditDocument extends React.Component {
     event.preventDefault();
     const {transfer, selectedStock, selectedStock2, selectedOperationType, orders} = this.state;
     this.props.saveDraftDocument(transfer, selectedStock, selectedStock2, selectedOperationType, orders);
-    this.props.history.push('/')
+    this.props.history.push('/');
+  }
+
+  clearDraftDocument = event => {
+    event.preventDefault();
+    const {clearDraft, match, history} = this.props;
+    clearDraft(match.params.draftId);
+    history.push('/');
   }
 
   render() {
     return (
-      <EditDocumentView
-        selectedOperationType = {this.state.selectedOperationType}
-        operationTypes = {this.state.operationTypes}
-        selectedStock = {this.state.selectedStock}
-        selectedStock2 = {this.state.selectedStock2}
-        orders = {this.state.orders}
-        stocks={this.state.stocks}
-        stocks2={this.state.stocks2}
-        products = {this.state.products}
-        transfer = {this.state.transfer}
-        submitDocument = {this.submitDocument}
-        operationTypeChange = {this.operationTypeChange}
-        stockChange = {this.stockChange}
-        orderLineChange = {this.orderLineChange}
-        addNewOrderLine = {this.addNewOrderLine}
-        saveDraftDocument = {this.saveDraftDocument}
-      />
+      <div>
+        <EditDocumentView
+          selectedOperationType = {this.state.selectedOperationType}
+          operationTypes = {this.state.operationTypes}
+          selectedStock = {this.state.selectedStock}
+          selectedStock2 = {this.state.selectedStock2}
+          stocks={this.state.stocks}
+          stocks2={this.state.stocks2}
+          transfer = {this.state.transfer}
+          submitDocument = {this.submitDocument}
+          operationTypeChange = {this.operationTypeChange}
+          stockChange = {this.stockChange}
+        >
+          <EditOrdersView
+            orders = {this.state.orders}
+            addNewOrderLine = {this.addNewOrderLine}
+            orderLineChange = {this.orderLineChange}
+            products = {this.state.products}
+          />
+          <EditButtons
+            saveDraftDocument = {this.saveDraftDocument}
+            clearDraftDocument = {this.clearDraftDocument}
+            draft = {this.props.draft}
+          />
+        </EditDocumentView>
+      </div>
     )
   }
 }
 
-const mapStateToProps = state => ({
-
+const mapStateToProps = (state, {match}) => ({
+  draft: getDraft(state, match.params.draftId)
 });
 
 const mapDispatchToProps = dispatch => ({
   saveDraftDocument: (transfer, selectedStock, selectedStock2, selectedOperationType, orders) =>
-    dispatch(saveDraftDocument(transfer, selectedStock, selectedStock2, selectedOperationType, orders))
+    dispatch(saveDraftDocument(transfer, selectedStock, selectedStock2, selectedOperationType, orders)),
+  clearDraft: draftId => dispatch(clearDraft(draftId))
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditDocument);
