@@ -18,7 +18,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
 import Badge from '@material-ui/core/Badge';
 
-
 import { getCurrentUser, getDraftNames } from '../reducers';
 
 const styles = theme => ({
@@ -54,6 +53,7 @@ class Navigator extends React.Component  {
   closeMenu = () => this.setState({anchorEl: null})
   toggleDrawer = open => () => this.setState({drawer:open})
   redirect = url => () => this.props.history.push(`/${url}`)
+
   logout = () => {
     this.closeMenu();
     this.redirect('logout')();
@@ -130,17 +130,17 @@ class Navigator extends React.Component  {
           >
             <div className={classes.list}>
               <List>
-                <ListItem button>
-                  <ListItemText primary="Stocks" onClick={this.redirect('stocks')}/>
+                <ListItem button onClick={this.redirect('stocks')}>
+                  <ListItemText primary="Stocks"/>
                 </ListItem>
-                <ListItem button>
-                  <ListItemText primary="Products" onClick={this.redirect('products')}/>
+                <ListItem button onClick={this.redirect('products')}>
+                  <ListItemText primary="Products" />
                 </ListItem>
-                <ListItem button>
-                  <ListItemText primary="Documents" onClick={this.redirect('documents')}/>
+                <ListItem button onClick={this.redirect('documents')}>
+                  <ListItemText primary="Documents" />
                 </ListItem>
-                <ListItem button>
-                  <ListItemText primary="Orders" onClick={this.redirect('orders')}/>
+                <ListItem button onClick={this.redirect('orders')}>
+                  <ListItemText primary="Orders" />
                 </ListItem>
               </List>
             </div>
@@ -152,9 +152,9 @@ class Navigator extends React.Component  {
 }
 
 const mapStateToProps = state => ({
-  user: getCurrentUser(state),
-  drafts: getDraftNames(state)
-});
+    user: getCurrentUser(state),
+    drafts: getDraftNames(state)
+  });
 
 const mapDispatchToProps = dispatch => ({
 

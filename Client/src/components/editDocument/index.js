@@ -36,6 +36,15 @@ class EditDocument extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.match.params.draftId !== this.props.match.params.draftId) {
+      const {draft} = nextProps;
+      if (draft) {
+        this.setState({...draft});
+      }
+    }
+  }
+
   getNewOrderLine = () => ({
     idProduct: "0",
     qty:"0"
@@ -137,7 +146,6 @@ const mapDispatchToProps = dispatch => ({
   saveDraftDocument: (transfer, selectedStock, selectedStock2, selectedOperationType, orders) =>
     dispatch(saveDraftDocument(transfer, selectedStock, selectedStock2, selectedOperationType, orders)),
   clearDraft: draftId => dispatch(clearDraft(draftId))
-
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditDocument);
