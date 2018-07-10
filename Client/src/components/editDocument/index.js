@@ -9,6 +9,7 @@ import { getDraft } from '../../reducers';
 import EditDocumentView from './editDocumentView';
 import EditOrdersView from './editOrdersView';
 import EditButtons from './editButtons';
+import SaveDraftDialog from './saveDraftDialog'
 
 class EditDocument extends React.Component {
   constructor() {
@@ -22,7 +23,8 @@ class EditDocument extends React.Component {
       orders:[this.getNewOrderLine()],
       stocks:[],
       products:[],
-      stocks2:[]
+      stocks2:[],
+      draftDialogOpen:false
     };
   }
 
@@ -96,7 +98,8 @@ class EditDocument extends React.Component {
     event.preventDefault();
     const {transfer, selectedStock, selectedStock2, selectedOperationType, orders} = this.state;
     this.props.saveDraftDocument(transfer, selectedStock, selectedStock2, selectedOperationType, orders);
-    this.props.history.push('/');
+    this.setState({draftDialogOpen:true})
+    //this.props.history.push('/');
   }
 
   clearDraftDocument = event => {
@@ -107,6 +110,7 @@ class EditDocument extends React.Component {
   }
 
   render() {
+    console.log(this.state.draftDialogOpen);
     return (
       <div>
         <EditDocumentView
@@ -133,6 +137,12 @@ class EditDocument extends React.Component {
             draft = {this.props.draft}
           />
         </EditDocumentView>
+        <SaveDraftDialog
+          dlgOpen={this.state.draftDialogOpen}
+          handleClose={() => this.setState({draftDialogOpen:false})}
+          handleCancel={() => this.setState({draftDialogOpen:false})}
+          handleOk={() => this.setState({draftDialogOpen:false})}
+        />
       </div>
     )
   }
