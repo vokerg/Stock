@@ -18,7 +18,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
 import Badge from '@material-ui/core/Badge';
 
-import { getCurrentUser, getDraftNames } from '../reducers';
+import { getCurrentUser, getDraftsList } from '../reducers';
 
 const styles = theme => ({
   root: {
@@ -58,9 +58,9 @@ class Navigator extends React.Component  {
     this.closeMenu();
     this.redirect('logout')();
   }
-  draftClick = draftName => () => {
+  draftClick = draftId => () => {
     this.closeMenu();
-    this.redirect(`draftDocument/${draftName}`)();
+    this.redirect(`draftDocument/${draftId}`)();
   }
 
   render() {
@@ -105,7 +105,7 @@ class Navigator extends React.Component  {
                     >
                       <MenuItem onClick={this.logout}>Logout</MenuItem>
                       {drafts.map(draft =>
-                        <MenuItem key={draft} onClick={this.draftClick(draft)}>{draft}</MenuItem>
+                        <MenuItem key={draft.draftId} onClick={this.draftClick(draft.draftId)}>{draft.draftName}</MenuItem>
                       )}
                     </Menu>
                   </div>
@@ -153,7 +153,7 @@ class Navigator extends React.Component  {
 
 const mapStateToProps = state => ({
     user: getCurrentUser(state),
-    drafts: getDraftNames(state)
+    drafts: getDraftsList(state)
   });
 
 const mapDispatchToProps = dispatch => ({

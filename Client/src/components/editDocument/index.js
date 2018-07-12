@@ -24,7 +24,9 @@ class EditDocument extends React.Component {
       stocks:[],
       products:[],
       stocks2:[],
-      draftDialogOpen:false
+      draftDialogOpen:false,
+      draftName:"",
+      draftId:null
     };
   }
 
@@ -94,13 +96,25 @@ class EditDocument extends React.Component {
     insertDoc(document)(() => console.log("order added!"));
   }
 
-  saveDraftDocument = event => {
-    event.preventDefault();
-    const {transfer, selectedStock, selectedStock2, selectedOperationType, orders} = this.state;
-    this.props.saveDraftDocument(transfer, selectedStock, selectedStock2, selectedOperationType, orders);
-    this.setState({draftDialogOpen:true})
-    //this.props.history.push('/');
+  saveDraftDocument = () => {
+    const {transfer, selectedStock, selectedStock2, selectedOperationType, orders, draftName, draftId} = this.state;
+    const payload = (({transfer, selectedStock, selectedStock2, selectedOperationType, orders, draftName, draftId}) =>
+      ({transfer, selectedStock, selectedStock2, selectedOperationType, orders, draftName, draftId}))(this.state);
+    this.props.saveDraftDocument(payload);
+    this.setState({draftDialogOpen:false});
+    this.props.history.push('/');
   }
+
+  saveDraftDocumentClick = event => {
+    event.preventDefault();
+    return (!this.state.draftId)
+      ? this.setState({draftDialogOpen:true})
+      : this.saveDraftDocument();
+  }
+
+  handleDialogOk = () => this.saveDraftDocument();
+
+  setDraftName = event => this.setState({draftName:event.target.value})
 
   clearDraftDocument = event => {
     event.preventDefault();
@@ -110,7 +124,6 @@ class EditDocument extends React.Component {
   }
 
   render() {
-    console.log(this.state.draftDialogOpen);
     return (
       <div>
         <EditDocumentView
@@ -132,7 +145,7 @@ class EditDocument extends React.Component {
             products = {this.state.products}
           />
           <EditButtons
-            saveDraftDocument = {this.saveDraftDocument}
+            saveDraftDocument = {this.saveDraftDocumentClick}
             clearDraftDocument = {this.clearDraftDocument}
             draft = {this.props.draft}
           />
@@ -141,7 +154,8 @@ class EditDocument extends React.Component {
           dlgOpen={this.state.draftDialogOpen}
           handleClose={() => this.setState({draftDialogOpen:false})}
           handleCancel={() => this.setState({draftDialogOpen:false})}
-          handleOk={() => this.setState({draftDialogOpen:false})}
+          handleOk={this.handleDialogOk}
+          setDraftName={this.setDraftName}
         />
       </div>
     )
@@ -153,8 +167,8 @@ const mapStateToProps = (state, {match}) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  saveDraftDocument: (transfer, selectedStock, selectedStock2, selectedOperationType, orders) =>
-    dispatch(saveDraftDocument(transfer, selectedStock, selectedStock2, selectedOperationType, orders)),
+  saveDraftDocument: (transfer, selectedStock, selectedStock2, selectedOperationType, orders, draftName, draftId) =>
+    dispatch(saveDraftDocument(transfer, selectedStock, selectedStock2, selectedOperationType, orders, draftName, draftId)),
   clearDraft: draftId => dispatch(clearDraft(draftId))
 });
 

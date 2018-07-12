@@ -10,15 +10,9 @@ export const stateLogout = () => ({
   type: 'LOGOUT'
 });
 
-export const saveDraftDocument = (transfer, selectedStock, selectedStock2, selectedOperationType, orders) => ({
+export const saveDraftDocument = payload => ({
   type: 'SAVE_DRAFT',
-  payload: {
-    transfer,
-    selectedStock,
-    selectedStock2,
-    selectedOperationType,
-    orders
-  }
+  payload
 });
 
 export const clearDraft = draftId => ({
