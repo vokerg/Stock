@@ -167,8 +167,8 @@ const mapStateToProps = (state, {match}) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  saveDraftDocument: (transfer, selectedStock, selectedStock2, selectedOperationType, orders, draftName, draftId) =>
-    dispatch(saveDraftDocument(transfer, selectedStock, selectedStock2, selectedOperationType, orders, draftName, draftId)),
+  saveDraftDocument: payload =>
+    dispatch(saveDraftDocument(payload)),
   clearDraft: draftId => dispatch(clearDraft(draftId))
 });
 

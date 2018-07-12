@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.stock.order.dao.OrderDocDao;
 import com.stock.order.model.OrderDoc;
 import com.stock.order.model.SharedUser;
+import com.stock.order.service.OrdersService;
 import com.stock.order.service.UserService;
 
 @RestController
@@ -33,6 +34,9 @@ public class OrderDocController {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	OrdersService ordersService;
 
 	@PutMapping("")
 	public ResponseEntity<Integer> addDoc(@RequestHeader(value = "idUser", required = false) String idUser,
@@ -49,6 +53,14 @@ public class OrderDocController {
 		template.convertAndSend("docAddedQueue", newDocId);
 		return ResponseEntity.ok(newDocId);
 	}
+	
+	@PutMapping("/validate")
+	public ResponseEntity<String> validateDoc(@RequestHeader(value = "idUser", required = false) String idUser,
+			@RequestBody OrderDoc doc) throws JsonParseException, JsonMappingException, IOException {
+		String response = ordersService.validateDoc(doc);
+		return ResponseEntity.ok(response);
+	}
+	
 
 	@GetMapping("")
 	public ResponseEntity<List<OrderDoc>> getAllDocs(@RequestHeader(value = "idUser", required = false) String idUser) throws JsonParseException, JsonMappingException, IOException {
