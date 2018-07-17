@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.stock.order.dao.OperationTypeDao;
 import com.stock.order.dao.OrderDao;
@@ -24,6 +25,9 @@ public class OrdersService {
 	
 	@Autowired
 	OperationTypeDao operationTypeDao;
+	
+	@Autowired
+	RestTemplate restTemplate;
 
 	public List<Order> getOrders(SharedUser sharedUser, String productId, String stockId, String documentId) throws AccessForbidden {
 		if (!sharedUser.isAdmin()) {
@@ -48,22 +52,21 @@ public class OrdersService {
 		if (sign >= 0) {
 			return "";
 		}
-		int stockId = doc.getStockId();
+		Integer stockId = doc.getStockId();
 		List<Order> failedOrders = doc.getOrders().stream()
 			.filter(order-> (order.getQty() > 0))
-			.filter(order -> !isEnoughStockRestsForOperation(stockId, order.getQty()))
+			.filter(order -> !isEnoughStockRestsForOperation(stockId, order.getProductId(), order.getQty()))
 			.collect(Collectors.toList());
-		return prepareFailedOrdersResult(failedOrders);
+		return failedOrders.size() > 0 ? prepareFailedOrdersResult(failedOrders) : "";
 	}
 
 	private String prepareFailedOrdersResult(List<Order> failedOrders) {
-		// TODO Auto-generated method stub
-		return null;
+		return failedOrders.stream().map(order -> order.getProductName()).collect(Collectors.joining(", "));
 	}
 
-	private boolean isEnoughStockRestsForOperation(int stockId, float qty) {
-		// TODO Auto-generated method stub
-		return true;
+	private boolean isEnoughStockRestsForOperation(Integer stockId, Integer productId, Float requestedUnits) {
+		Float stockRestQty = restTemplate.getForObject("http://STOCK-API/stocks" + String.valueOf(stockId) + "/" + String.valueOf(productId), Float.class);
+		return requestedUnits <= stockRestQty;
 	}
 
 }

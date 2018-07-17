@@ -20,9 +20,11 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.stock.entity.Product;
 import com.stock.entity.SharedUser;
 import com.stock.entity.Stock;
 import com.stock.entity.StockRest;
+import com.stock.repository.ProductRepository;
 import com.stock.repository.StockRepository;
 import com.stock.repository.StockRestRepository;
 import com.stock.service.UserService;
@@ -42,6 +44,9 @@ public class StockController {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	ProductRepository productRepository;
 
 	@GetMapping("")
 	public List<Stock> allStocks(@RequestHeader(value = "idUser", required = false) String idUser)
@@ -72,6 +77,17 @@ public class StockController {
 				? ResponseEntity
 						.ok(this.stockRestRepository.findByStockExcludeEmpty(this.stockRepository.findById(Long.valueOf(id))))
 				: ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+	}
+	
+	@GetMapping("/{id}/stockrest/{productId}")
+	public ResponseEntity<Float> getStockRestForProduct(@PathVariable String stockId, @PathVariable String productId) {
+		Stock stock = this.stockRepository.findById(Long.valueOf(stockId));
+		Product product = this.productRepository.findById(Long.valueOf(productId));
+		if (stock == null || product == null) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
+		StockRest rest = this.stockRestRepository.findFirstByProductAndStock(product, stock);
+		return ResponseEntity.ok((rest == null) ? 0 : rest.getQty());
 	}
 
 	@GetMapping("/{id}/orders")

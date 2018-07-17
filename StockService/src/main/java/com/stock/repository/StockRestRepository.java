@@ -15,4 +15,5 @@ public interface StockRestRepository extends JpaRepository<StockRest, Long> {
 	List<StockRest> findByStockExcludeEmpty(@Param("stock") Stock stock);
 	List<StockRest> findByProduct(Product product);
 	List<StockRest> findByProductAndStockIdIn(Product product, List<Long> ids);
+	StockRest findFirstByProductAndStock(Product product, Stock stock);
 }
