@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import com.stock.order.dao.OperationTypeDao;
 import com.stock.order.dao.OrderDao;
 import com.stock.order.dao.OrderDocDao;
+import com.stock.order.dao.ProductDao;
 import com.stock.order.model.Order;
 import com.stock.order.model.OrderDoc;
 import com.stock.order.model.SharedUser;
@@ -28,6 +29,9 @@ public class OrdersService {
 	
 	@Autowired
 	RestTemplate restTemplate;
+	
+	@Autowired
+	ProductDao productDao;
 
 	public List<Order> getOrders(SharedUser sharedUser, String productId, String stockId, String documentId) throws AccessForbidden {
 		if (!sharedUser.isAdmin()) {
@@ -61,11 +65,13 @@ public class OrdersService {
 	}
 
 	private String prepareFailedOrdersResult(List<Order> failedOrders) {
-		return failedOrders.stream().map(order -> order.getProductName()).collect(Collectors.joining(", "));
+		return failedOrders.stream()
+				.map(order -> productDao.getProductName(String.valueOf(order.getProductId())))
+				.collect(Collectors.joining(","));
 	}
 
 	private boolean isEnoughStockRestsForOperation(Integer stockId, Integer productId, Float requestedUnits) {
-		Float stockRestQty = restTemplate.getForObject("http://STOCK-API/stocks" + String.valueOf(stockId) + "/" + String.valueOf(productId), Float.class);
+		Float stockRestQty = restTemplate.getForObject("http://STOCK-API/stocks/" + String.valueOf(stockId) + "/stockrest/" + String.valueOf(productId), Float.class);
 		return requestedUnits <= stockRestQty;
 	}
 

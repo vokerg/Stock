@@ -12,6 +12,8 @@ public class OrderDocServiceImpl implements OrderDocService{
 
 	private static final int ORDER_DOC_PROCESSED = 1;
 
+	private static final Integer ORDER_DOC_PROCESSED_WITH_ERROR = 2;
+
 	@Autowired
 	OrderDocRepository orderDocRepository;
 	
@@ -22,8 +24,14 @@ public class OrderDocServiceImpl implements OrderDocService{
 	@Transactional
 	public void processOrderDoc(String id) {
 		StockOrderDoc doc = orderDocRepository.findById(Long.valueOf(id));
-		doc.getOrders().stream().forEach(order -> orderService.processOrder(order));
-		doc.setStatusId(ORDER_DOC_PROCESSED);
+		doc.getOrders().stream().forEach(order -> {
+			try {
+				orderService.processOrder(order);
+				doc.setStatusId(ORDER_DOC_PROCESSED);
+			} catch (OrderProcessingException e) {
+				doc.setStatusId(ORDER_DOC_PROCESSED_WITH_ERROR);
+			}
+		});
 		orderDocRepository.save(doc);
 	}
 

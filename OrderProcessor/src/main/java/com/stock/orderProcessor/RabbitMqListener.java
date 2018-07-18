@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.stock.service.OrderDocService;
+import com.stock.service.OrderProcessingException;
 import com.stock.service.OrderService;
 
 @EnableRabbit
@@ -30,8 +31,11 @@ public class RabbitMqListener {
 	
 	@RabbitListener(queues = "orderAddedQueue")
 	public void processOrderAddedQueue(String id) {
-		orderService.processOrder(id);
-		System.out.println(id);
+		try {
+			orderService.processOrder(id);
+		} catch (OrderProcessingException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@RabbitListener(queues = "docAddedQueue")

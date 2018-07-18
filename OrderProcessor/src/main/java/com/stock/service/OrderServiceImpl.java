@@ -14,6 +14,8 @@ import com.stock.repository.StockRestRepository;
 public class OrderServiceImpl implements OrderService{
 	private static final Integer STATUS_PROCESSED = 1;
 
+	private static final Integer STATUS_PROCESSED_WITH_ERROR = 2;
+
 	@Autowired
 	OrderRepository orderRepository;
 	
@@ -24,7 +26,7 @@ public class OrderServiceImpl implements OrderService{
 	OperationTypeRepository operationTypeRepository;
 	
 	@Override
-	public void processOrder(String id) {
+	public void processOrder(String id) throws OrderProcessingException {
 		StockOrder order = getOrder(id);
 		processOrder(order);
 	}
@@ -58,20 +60,30 @@ public class OrderServiceImpl implements OrderService{
 		order.setStatusId(STATUS_PROCESSED);
 		orderRepository.save(order);
 	}
+	
+	private void updateOrderToFailed(StockOrder order) {
+		order.setStatusId(STATUS_PROCESSED_WITH_ERROR);
+		orderRepository.save(order);
+	}
 
 	private StockOrder getOrder(String id) {
 		return orderRepository.findById(Long.valueOf(id));
 	}
 
 	@Override
-	public void processOrder(StockOrder order) {
-		OperationType operationType = operationTypeRepository.getById((long) order.getOperationTypeId());
-		if (operationType.getSign() != 0) {
-			StockRest stockRest1 = getStockRest(order.getProductId(), order.getStockId1());
-			StockRest stockRest2 = getStockRest(order.getProductId(), order.getStockId2());
-			updateStockRest(stockRest1, stockRest2, operationType, order.getQty());
+	public void processOrder(StockOrder order) throws OrderProcessingException {
+		try {
+			OperationType operationType = operationTypeRepository.getById((long) order.getOperationTypeId());
+			if (operationType.getSign() != 0) {
+				StockRest stockRest1 = getStockRest(order.getProductId(), order.getStockId1());
+				StockRest stockRest2 = getStockRest(order.getProductId(), order.getStockId2());
+				updateStockRest(stockRest1, stockRest2, operationType, order.getQty());
+			}
+			updateOrderToProcessed(order);
+		} catch (RuntimeException e) {
+			updateOrderToFailed(order);
+			throw new OrderProcessingException(e.getCause());
 		}
-		updateOrderToProcessed(order);
-		
 	}
+
 }

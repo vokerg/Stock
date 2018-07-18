@@ -56,14 +56,27 @@ export const getDocs = next =>
   })
   .then(docs => next(docs));
 
-  export const insertDoc = doc => next =>
-    fetch('/orders/docs/', {
-        method: 'put',
-        body: JSON.stringify(doc),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          ...authorization()
-        }
-    })
-    .then(response => next(response));
+export const insertDoc = doc => next =>
+  fetch('/orders/docs/', {
+      method: 'put',
+      body: JSON.stringify(doc),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        ...authorization()
+      }
+  })
+  .then(response => next(response));
+
+export const validateDoc = doc => next =>
+  fetch('/orders/docs/validate', {
+      method: 'put',
+      body: JSON.stringify(doc),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        ...authorization()
+      }
+  })
+  .then(response => response.text())
+  .then(validationResult => next(validationResult));

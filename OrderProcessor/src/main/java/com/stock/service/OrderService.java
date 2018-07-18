@@ -4,8 +4,8 @@ import com.stock.model.StockOrder;
 
 public interface OrderService {
 
-	void processOrder(String id);
+	void processOrder(String id) throws OrderProcessingException;
 
-	void processOrder(StockOrder order);
+	void processOrder(StockOrder order) throws OrderProcessingException;
 
 }

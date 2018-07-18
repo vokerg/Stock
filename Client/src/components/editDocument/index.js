@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { getStocks } from '../../api/stockApi';
 import { getProducts } from '../../api/productApi';
-import { getOperationTypes, insertDoc } from '../../api/ordersApi';
+import { getOperationTypes, insertDoc, validateDoc } from '../../api/ordersApi';
 import { saveDraftDocument, clearDraft } from '../../actions';
 import { getDraft } from '../../reducers';
 import EditDocumentView from './editDocumentView';
@@ -93,7 +93,10 @@ class EditDocument extends React.Component {
         qty: order.qty
       }))
     };
-    insertDoc(document)(() => console.log("order added!"));
+    validateDoc(document)((value) => {
+      console.log("doc validation", value);
+      insertDoc(document)(() => console.log("order added!"));
+    })
   }
 
   saveDraftDocument = () => {

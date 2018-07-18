@@ -80,8 +80,8 @@ public class StockController {
 	}
 	
 	@GetMapping("/{id}/stockrest/{productId}")
-	public ResponseEntity<Float> getStockRestForProduct(@PathVariable String stockId, @PathVariable String productId) {
-		Stock stock = this.stockRepository.findById(Long.valueOf(stockId));
+	public ResponseEntity<Float> getStockRestForProduct(@PathVariable String id, @PathVariable String productId) {
+		Stock stock = this.stockRepository.findById(Long.valueOf(id));
 		Product product = this.productRepository.findById(Long.valueOf(productId));
 		if (stock == null || product == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
