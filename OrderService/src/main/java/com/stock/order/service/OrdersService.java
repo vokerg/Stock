@@ -34,8 +34,11 @@ public class OrdersService {
 	ProductDao productDao;
 
 	public List<Order> getOrders(SharedUser sharedUser, String productId, String stockId, String documentId) throws AccessForbidden {
+		if (sharedUser == null) {
+			throw new AccessForbidden();
+		}
 		if (!sharedUser.isAdmin()) {
-			if ((sharedUser != null) && (stockId != null) && (!sharedUser.getViewstocks().contains(stockId))) {
+			if ((stockId != null) && (!sharedUser.getViewstocks().contains(stockId))) {
 				throw new AccessForbidden();
 			}
 			
@@ -47,7 +50,7 @@ public class OrdersService {
 			}
 		}
 
-		List<Order> orders = orderDao.getFilteredOrders(productId, stockId, documentId, (sharedUser != null && !sharedUser.isAdmin()) ? sharedUser.getViewstocks() : null);
+		List<Order> orders = orderDao.getFilteredOrders(productId, stockId, documentId, sharedUser.isAdmin() ? null : sharedUser.getViewstocks());
 		return orders;
 	}
 

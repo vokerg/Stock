@@ -69,7 +69,8 @@ public class OrderDocDaoImpl implements OrderDocDao{
 			doc.setDate(rs.getDate("date"));
 			doc.setId(rs.getInt("id"));
 			doc.setOperationTypeId(rs.getInt("operation_type_id"));
-			doc.setOperationTypeName(operationTypeDao.getOperationTypeName(doc.getOperationTypeId()));
+			String operationTypeName = operationTypeDao.getOperationTypeName(doc.getOperationTypeId());
+			doc.setOperationTypeName(operationTypeName != null ? operationTypeName : "");
 			doc.setStockId(rs.getInt("stock_id1"));
 			Integer idStock2 = rs.getInt("stock_id2");
 			doc.setStockId2(rs.wasNull() ? null : idStock2);
@@ -94,6 +95,9 @@ public class OrderDocDaoImpl implements OrderDocDao{
 
 	@Override
 	public List<OrderDoc> getDocs(List<String> viewstocks) {
+		if (viewstocks == null) {
+			return getDocs();
+		}
 		String viewStocks = (viewstocks.size() != 0) ? viewstocks.stream().collect(Collectors.joining(",")) : "-1";
 		return getDocs(" and (stock_id1 in (" + viewStocks + ") or stock_id2 in(" + viewStocks + "))");
 	}

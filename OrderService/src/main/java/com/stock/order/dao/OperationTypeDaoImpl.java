@@ -1,6 +1,7 @@
 package com.stock.order.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -40,7 +41,8 @@ public class OperationTypeDaoImpl implements OperationTypeDao{
 		if (cachedOperationTypes == null) {
 			initializeOperationTypeCache();
 		}
-		return cachedOperationTypes.stream().filter(op -> op.getId() == id).findFirst().get().getName();
+		Optional<OperationType> ot = cachedOperationTypes.stream().filter(op -> op.getId() == id).findFirst();
+		return ot.isPresent() ? ot.get().getName() : null;
 	}
 
 }

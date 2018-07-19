@@ -17,6 +17,9 @@ public class UserService {
 	RestTemplate restTemplate;
 	
 	public SharedUser getSharedUser(String idUser) throws JsonParseException, JsonMappingException, IOException {
+		if (idUser == null) {
+			return null;
+		}
 		String obj = restTemplate.getForObject("http://STOCK-AUTH/users/" + idUser, String.class);
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.readValue(obj, SharedUser.class);

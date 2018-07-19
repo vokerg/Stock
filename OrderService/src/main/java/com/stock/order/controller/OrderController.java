@@ -62,19 +62,17 @@ public class OrderController {
 	}
 
 	@GetMapping("")
-	public ResponseEntity<List<Order>> getOrders(@RequestHeader(value = "idUser", required = false) String idUser,
+	public ResponseEntity<List<Order>> getOrders(
+			@RequestHeader(value = "idUser", required = false) String idUser,
 			@RequestParam(value = "productId", required = false) String productId,
 			@RequestParam(value = "stockId", required = false) String stockId,
 			@RequestParam(value = "paramUserId", required = false) String paramUserId,
-			@RequestParam(value = "documentId", required = false) String documentId)
-			throws JsonParseException, JsonMappingException, IOException {
-		
-		SharedUser sharedUser = (idUser != null) ? userService.getSharedUser(idUser)
-				: (paramUserId != null) ? userService.getSharedUser(idUser) : null;
+			@RequestParam(value = "documentId", required = false) String documentId
+	) throws JsonParseException, JsonMappingException, IOException {
+		SharedUser sharedUser = userService.getSharedUser((idUser != null) ? idUser : (paramUserId != null) ? paramUserId : null);
 		if (!validateGetOrdersRequest(sharedUser, paramUserId, idUser, documentId)) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
-		
 		try {
 			List<Order> orders = ordersService.getOrders(sharedUser, productId, stockId, documentId);
 			return ResponseEntity.ok(orders);

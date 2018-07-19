@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -19,6 +20,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.stock.order.dao.OrderDocDao;
 import com.stock.order.model.OrderDoc;
 import com.stock.order.model.SharedUser;
+import com.stock.order.service.AccessForbidden;
+import com.stock.order.service.DocsService;
 import com.stock.order.service.OrdersService;
 import com.stock.order.service.UserService;
 
@@ -28,6 +31,9 @@ public class OrderDocController {
 
 	@Autowired
 	OrderDocDao docDao;
+	
+	@Autowired
+	DocsService docsService;
 
 	@Autowired
 	AmqpTemplate template;
@@ -63,11 +69,18 @@ public class OrderDocController {
 	
 
 	@GetMapping("")
-	public ResponseEntity<List<OrderDoc>> getAllDocs(@RequestHeader(value = "idUser", required = false) String idUser) throws JsonParseException, JsonMappingException, IOException {
-		SharedUser sharedUser = (idUser != null) ? userService.getSharedUser(idUser) : null;
-		if ((idUser != null) && (sharedUser == null)) {
+	public ResponseEntity<List<OrderDoc>> getAllDocs(
+			@RequestHeader(value = "idUser", required = false) String idUser,
+			@RequestParam(value = "paramUserId", required = false) String paramUserId
+	) throws JsonParseException, JsonMappingException, IOException {
+		SharedUser sharedUser = userService.getSharedUser((idUser != null) ? idUser : (paramUserId != null) ? paramUserId : null);
+		if ((idUser != null || paramUserId != null) && (sharedUser == null)) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
-		return ResponseEntity.ok((sharedUser == null) ? docDao.getDocs() : docDao.getDocs(sharedUser.getViewstocks()));
+		try {
+			return ResponseEntity.ok(docsService.getOrders(sharedUser));
+		} catch (AccessForbidden e) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+		}
 	}
 }
