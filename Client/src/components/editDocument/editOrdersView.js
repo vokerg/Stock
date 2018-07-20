@@ -1,6 +1,15 @@
 import React from 'react';
 
-const EditOrdersView = ({orders, addNewOrderLine, orderLineChange, products}) =>
+import SelectProduct from './selectProduct';
+
+const getProductName = (products, idProduct) => {
+
+    const product = products.find(element => element.id === idProduct);
+    console.log(idProduct, products, product)
+    return (product) ? product.name : "";
+}
+
+const EditOrdersView = ({orders, addNewOrderLine, orderLineInputChange, products, productChange}) =>
 {
   return (
     orders.map((order, key) =>
@@ -13,18 +22,19 @@ const EditOrdersView = ({orders, addNewOrderLine, orderLineChange, products}) =>
           }
         </td>
         <td>
-          <select name="idProduct" value = {order.idProduct} onChange = {orderLineChange(key)}>
-            <option value="0"></option>
-            {products.map(element =>
-              <option key={element.id} value={element.id}>{element.name}</option>
-            )}
-          </select>
+          <SelectProduct
+            productChange={productChange(key)}
+            selectedProductId={order.idProduct}
+            selectedProductName={getProductName(products, order.idProduct)}
+            products={products}
+
+          />
         </td>
         <td>
           <input
             name="qty" type="text"
             value = {order.qty}
-            onChange = {orderLineChange(key)}
+            onChange = {orderLineInputChange(key)}
             disabled={order.idProduct === "0"}
           />
         </td>

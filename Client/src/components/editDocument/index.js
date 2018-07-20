@@ -65,17 +65,15 @@ class EditDocument extends React.Component {
       .forEach(({fTransfer: transfer}) => this.setState({ transfer }));
   }
 
-  orderLineChange = key => ({target: input}) =>
-    this.setState({
-      orders: this.state.orders.map(
-        (order, arrayKey) => (arrayKey === key) ? {...order, [input.name]:input.value} : order
-      )
-    })
+  orderLineChange = orderColumnName => key => orderColumnValue => this.setState({
+    orders: this.state.orders.map(
+      (order, arrayKey) => (arrayKey === key) ? {...order, [orderColumnName]:orderColumnValue} : order
+    )
+  });
 
-  stockChange = ({target: input}) =>
-    this.setState({
-      [input.name]: input.value
-    })
+  orderLineInputChange = key => ({target: input}) => this.orderLineChange(input.name)(key)(input.value);
+
+  stockChange = ({target: input}) => this.setState({ [input.name]: input.value });
 
   submitDocument = event => {
     event.preventDefault();
@@ -94,7 +92,6 @@ class EditDocument extends React.Component {
       }))
     };
     validateDoc(document)((value) => {
-      console.log("doc validation", value);
       insertDoc(document)(() => console.log("order added!"));
     })
   }
@@ -144,8 +141,9 @@ class EditDocument extends React.Component {
           <EditOrdersView
             orders = {this.state.orders}
             addNewOrderLine = {this.addNewOrderLine}
-            orderLineChange = {this.orderLineChange}
+            orderLineInputChange = {this.orderLineInputChange}
             products = {this.state.products}
+            productChange = {this.orderLineChange("idProduct")}
           />
           <EditButtons
             saveDraftDocument = {this.saveDraftDocumentClick}
@@ -170,8 +168,7 @@ const mapStateToProps = (state, {match}) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  saveDraftDocument: payload =>
-    dispatch(saveDraftDocument(payload)),
+  saveDraftDocument: payload => dispatch(saveDraftDocument(payload)),
   clearDraft: draftId => dispatch(clearDraft(draftId))
 });
 
