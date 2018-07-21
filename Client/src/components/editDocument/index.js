@@ -14,7 +14,7 @@ class EditDocument extends React.Component {
   constructor() {
     super();
     this.state = {
-      selectedOperationType:"0",
+      selectedOperationType:0,
       selectedStock:"0",
       selectedStock2:"0",
       operationTypes:[],
@@ -59,7 +59,7 @@ class EditDocument extends React.Component {
   operationTypeChange = ({target: input}) => {
     this.setState({selectedOperationType: input.value})
     this.state.operationTypes
-      .filter(({id}) => id.toString() === input.value)
+      .filter(({id}) => id === input.value)
       .forEach(({fTransfer: transfer}) => this.setState({ transfer }));
   }
 
@@ -71,7 +71,10 @@ class EditDocument extends React.Component {
 
   orderLineInputChange = key => ({target: input}) => this.orderLineChange(input.name)(key)(input.value);
 
-  stockChange = ({target: input}) => this.setState({ [input.name]: input.value });
+  stockChange = ({target: input}) => {
+    console.log(input.name, input.value)
+    this.setState({ [input.name]: input.value });
+  }
 
   submitDocument = event => {
     event.preventDefault();
@@ -129,7 +132,6 @@ class EditDocument extends React.Component {
           selectedStock = {this.state.selectedStock}
           selectedStock2 = {this.state.selectedStock2}
           stocks={this.state.stocks}
-          stocks2={this.state.stocks2}
           transfer = {this.state.transfer}
           submitDocument = {this.submitDocument}
           operationTypeChange = {this.operationTypeChange}

@@ -3,9 +3,20 @@ import { connect } from 'react-redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import { withStyles } from '@material-ui/core/styles';
+
 
 import { getProduct } from '../../reducers';
 import ProductsList from '../productsList';
+
+const styles = theme => ({
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 300,
+  },
+});
 
 class SelectProduct extends React.Component {
   constructor() {
@@ -32,8 +43,16 @@ class SelectProduct extends React.Component {
   render() {
     return (
       <div>
-        {this.state.selectedProductName}
-        <Button onClick={this.handleClickOpen}>Select</Button>
+        <TextField
+          id="productName"
+          label="Product"
+          readonly={true}
+          autoComplete="off"
+          value={this.state.selectedProductName}
+          margin="normal"
+          onClick={this.handleClickOpen}
+          className={this.props.classes.textField}
+        />
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
@@ -56,4 +75,4 @@ const mapStateToProps = (state, {selectedProductId}) => ({
   product: getProduct(state, selectedProductId)
 })
 
-export default connect(mapStateToProps, () => ({}))(SelectProduct);
+export default withStyles(styles)(connect(mapStateToProps, () => ({}))(SelectProduct));

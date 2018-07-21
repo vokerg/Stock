@@ -1,17 +1,16 @@
 import React from 'react';
+import Button from '@material-ui/core/Button';
 
 const EditButtons = ({saveDraftDocument, clearDraftDocument, draft}) => {
   return (
-    <tr>
-      <td>
-        <button onClick = {saveDraftDocument}>Save draft</button>
+    <div>
+        <Button onClick = {saveDraftDocument}>Save draft</Button>
         {
           draft &&
-          <button onClick = {clearDraftDocument}>Clear draft</button>
+          <Button onClick = {clearDraftDocument}>Clear draft</Button>
         }
-      </td>
-      <td><button type="submit">Submit</button></td>
-    </tr>
+        <Button type="submit">Submit</Button>
+    </div>
   )
 }
 
