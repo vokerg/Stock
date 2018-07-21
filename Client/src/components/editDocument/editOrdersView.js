@@ -2,14 +2,7 @@ import React from 'react';
 
 import SelectProduct from './selectProduct';
 
-const getProductName = (products, idProduct) => {
-
-    const product = products.find(element => element.id === idProduct);
-    console.log(idProduct, products, product)
-    return (product) ? product.name : "";
-}
-
-const EditOrdersView = ({orders, addNewOrderLine, orderLineInputChange, products, productChange}) =>
+const EditOrdersView = ({orders, addNewOrderLine, orderLineInputChange, productChange}) =>
 {
   return (
     orders.map((order, key) =>
@@ -25,9 +18,6 @@ const EditOrdersView = ({orders, addNewOrderLine, orderLineInputChange, products
           <SelectProduct
             productChange={productChange(key)}
             selectedProductId={order.idProduct}
-            selectedProductName={getProductName(products, order.idProduct)}
-            products={products}
-
           />
         </td>
         <td>

@@ -2,9 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { getStocks } from '../../api/stockApi';
-import { getProducts } from '../../api/productApi';
 import { getOperationTypes, insertDoc, validateDoc } from '../../api/ordersApi';
-import { saveDraftDocument, clearDraft } from '../../actions';
+import { saveDraftDocument, clearDraft, fetchProducts } from '../../actions';
 import { getDraft } from '../../reducers';
 import EditDocumentView from './editDocumentView';
 import EditOrdersView from './editOrdersView';
@@ -22,7 +21,6 @@ class EditDocument extends React.Component {
       transfer: false,
       orders:[this.getNewOrderLine()],
       stocks:[],
-      products:[],
       stocks2:[],
       draftDialogOpen:false,
       draftName:"",
@@ -32,7 +30,7 @@ class EditDocument extends React.Component {
 
   componentDidMount() {
     getStocks(stocks => this.setState({stocks, stocks2:stocks}));
-    getProducts(products => this.setState({products}));
+    this.props.fetchProducts();
     getOperationTypes(operationTypes => this.setState({operationTypes}));
     const {draft} = this.props;
     if (draft) {
@@ -97,7 +95,6 @@ class EditDocument extends React.Component {
   }
 
   saveDraftDocument = () => {
-    const {transfer, selectedStock, selectedStock2, selectedOperationType, orders, draftName, draftId} = this.state;
     const payload = (({transfer, selectedStock, selectedStock2, selectedOperationType, orders, draftName, draftId}) =>
       ({transfer, selectedStock, selectedStock2, selectedOperationType, orders, draftName, draftId}))(this.state);
     this.props.saveDraftDocument(payload);
@@ -142,7 +139,6 @@ class EditDocument extends React.Component {
             orders = {this.state.orders}
             addNewOrderLine = {this.addNewOrderLine}
             orderLineInputChange = {this.orderLineInputChange}
-            products = {this.state.products}
             productChange = {this.orderLineChange("idProduct")}
           />
           <EditButtons
@@ -169,7 +165,8 @@ const mapStateToProps = (state, {match}) => ({
 
 const mapDispatchToProps = dispatch => ({
   saveDraftDocument: payload => dispatch(saveDraftDocument(payload)),
-  clearDraft: draftId => dispatch(clearDraft(draftId))
+  clearDraft: draftId => dispatch(clearDraft(draftId)),
+  fetchProducts: () => dispatch(fetchProducts())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditDocument);

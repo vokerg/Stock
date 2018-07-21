@@ -1,3 +1,5 @@
+import { getProducts } from '../api/productApi';
+
 export const stateLogin = (authorization, user) => ({
   type: 'LOGIN',
   payload: {
@@ -17,5 +19,13 @@ export const saveDraftDocument = payload => ({
 
 export const clearDraft = draftId => ({
   type: 'CLEAR_DRAFT',
-  payload: {draftId}
+  payload: { draftId }
 });
+
+export const loadProducts = products => ({
+  type: 'LOAD_PRODUCTS',
+  payload: { products }
+})
+
+export const fetchProducts = () => dispatch =>
+  getProducts(products => dispatch(loadProducts(products)));

@@ -42,7 +42,6 @@ const styles = theme => ({
 class Navigator extends React.Component  {
   constructor(props) {
     super(props);
-    const {user} = this.props;
     this.state={
       anchorEl: null,
       drawer: false

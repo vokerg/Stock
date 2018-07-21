@@ -1,9 +1,10 @@
 import React from 'react';
-
+import { connect } from 'react-redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
 
+import { getProduct } from '../../reducers';
 import ProductsList from '../productsList';
 
 class SelectProduct extends React.Component {
@@ -17,8 +18,8 @@ class SelectProduct extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    const {selectedProductId, selectedProductName} = props;
-    this.setState({selectedProductId, selectedProductName})
+    const {selectedProductId, product} = props;
+    this.setState({selectedProductId, selectedProductName:(product) ? product.name : ""})
   }
 
   handleClickOpen = () => this.setState({open:true})
@@ -43,7 +44,6 @@ class SelectProduct extends React.Component {
               <ProductsList
                 selectedProductId={this.state.selectedProductId}
                 selectProduct={this.selectProduct}
-                products={this.props.products}
               />
           </DialogContent>
         </Dialog>
@@ -52,4 +52,8 @@ class SelectProduct extends React.Component {
   }
 }
 
-export default SelectProduct;
+const mapStateToProps = (state, {selectedProductId}) => ({
+  product: getProduct(state, selectedProductId)
+})
+
+export default connect(mapStateToProps, () => ({}))(SelectProduct);

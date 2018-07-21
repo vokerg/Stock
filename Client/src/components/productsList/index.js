@@ -1,54 +1,28 @@
 import React from 'react';
-
+import { connect } from 'react-redux';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Checkbox from '@material-ui/core/Checkbox';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import { getProducts } from '../../api/productApi';
 import ProductsToolbar from './productsToolbar';
+import { getProducts } from '../../reducers';
 
 class ProductsList extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      products: [],
-      showProducts: [],
-      productFitler: ''
-    };
-  }
 
-  componentDidMount() {
-    const {products} = this.props;
-    if (products) {
-      this.setState({ products, showProducts: products });
-    } else {
-      getProducts(products =>
-        this.setState({
-          products,
-          showProducts: products
-        })
-      );
-    }
-  }
-
-  onFilterChange = event => {
-    const productFitler = event.target.value;
-    this.setState({
-      productFitler,
-      showProducts: this.state.products.filter(product =>
-        product.name.toUpperCase().includes(productFitler.toUpperCase())
-      )
-    });
-  }
+  state = ({
+    productFitler: ''
+  })
 
   render() {
+    const showProducts = this.props.products.filter(product =>
+      product.name.toUpperCase().includes(this.state.productFitler.toUpperCase())
+    )
     return (
       <div>
         <ProductsToolbar productFilter={this.state.productFilter} onFilterChange = {this.onFilterChange}/>
         <List>
-          {this.state.showProducts.map((product, key) =>
+          {showProducts.map((product, key) =>
             <ListItem
               key={key}
               role={undefined}
@@ -72,4 +46,8 @@ class ProductsList extends React.Component {
   }
 }
 
-export default ProductsList;
+const mapStateToProps = state => ({
+  products: getProducts(state)
+})
+
+export default connect(mapStateToProps, () => ({}))(ProductsList);
