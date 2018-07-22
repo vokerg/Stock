@@ -1,5 +1,8 @@
 import React from 'react';
 import Input from '@material-ui/core/Input';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
+
 import { addProductPicture } from '../../api/metadataApi';
 import PictureGallery from '../common/pictureGallery';
 import { getProductPictures, removeProductImage } from '../../api/metadataApi'
@@ -33,6 +36,9 @@ class ImageManagement extends React.Component {
     const {id} = this.props.match.params;
     return (
       <div>
+        <Toolbar>
+          <Button onClick={() => this.props.history.push(`/products/${id}`)}>Back to product</Button>
+        </Toolbar>
         <PictureGallery
           productPictureIds={this.state.productPictureIds}
           imgPathStatic={`/metadata/images/product/${id}`}

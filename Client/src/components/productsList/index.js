@@ -10,9 +10,9 @@ import { getProducts } from '../../reducers';
 
 class ProductsList extends React.Component {
 
-  state = ({
-    productFitler: ''
-  })
+  state = ({ productFitler: '' })
+
+  onFilterChange = event => this.setState({ productFitler : event.target.value });
 
   render() {
     const showProducts = this.props.products.filter(product =>
