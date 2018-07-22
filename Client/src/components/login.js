@@ -1,25 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { login } from '../api/loginApi';
+import { login } from '../api';
 import { stateLogin } from '../actions';
 import { getCurrentUser } from '../reducers';
 
 class Login extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      username:"",
-      password:"",
-      errorMessage:""
-    };
-  }
+  state = {
+    username:"",
+    password:"",
+    errorMessage:""
+  };
 
-  onChange = event =>
-    this.setState({
-      ...this.state,
-      [event.target.name]: event.target.value
-  })
+  onChange = event => this.setState({ [event.target.name]: event.target.value });
 
   onSubmit = event => {
     event.preventDefault();
@@ -30,7 +23,7 @@ class Login extends React.Component {
         this.props.stateLogin(token, user);
         this.props.history.push("/");
       } else {
-        this.setState({errorMessage: "Incorrect username or passowrd"})
+        this.setState({ errorMessage: "Incorrect username or passowrd" })
       }
     });
   }

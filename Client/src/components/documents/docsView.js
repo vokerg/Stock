@@ -7,7 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import { getDocs } from '../../api/ordersApi';
+import { getDocs } from '../../api';
 import SingleDocView from './singleDocView';
 
 class DocsView extends React.Component {

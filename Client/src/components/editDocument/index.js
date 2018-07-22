@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { getStocks } from '../../api/stockApi';
-import { getOperationTypes, insertDoc, validateDoc } from '../../api/ordersApi';
+import { getStocks, getOperationTypes, insertDoc, validateDoc } from '../../api';
 import { saveDraftDocument, clearDraft, fetchProducts } from '../../actions';
 import { getDraft } from '../../reducers';
 import EditDocumentView from './editDocumentView';

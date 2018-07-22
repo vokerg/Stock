@@ -1,4 +1,5 @@
-import { getProducts } from '../api/productApi';
+import { getProducts } from '../api';
+import { getCurrentUserId } from '../reducers';
 
 export const stateLogin = (authorization, user) => ({
   type: 'LOGIN',
@@ -25,6 +26,15 @@ export const clearDraft = draftId => ({
 export const loadProducts = products => ({
   type: 'LOAD_PRODUCTS',
   payload: { products }
+})
+
+export const visit = (textDescription, url) => ({
+  type: 'ADD_VISIT',
+  payload: {
+    userId: getCurrentUserId(),
+    textDescription,
+    url
+  }
 })
 
 export const fetchProducts = () => dispatch =>

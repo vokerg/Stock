@@ -9,7 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import { getAllOrders, getOrdersForDoc, getOrdersForStock, getOrdersForProduct } from '../../api/ordersApi';
+import { getAllOrders, getOrdersForDoc, getOrdersForStock, getOrdersForProduct } from '../../api';
 import AccessDenied from '../common/accessDenied';
 
 class OrdersView extends React.Component {

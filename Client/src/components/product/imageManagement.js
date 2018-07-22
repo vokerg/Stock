@@ -3,9 +3,8 @@ import Input from '@material-ui/core/Input';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 
-import { addProductPicture } from '../../api/metadataApi';
 import PictureGallery from '../common/pictureGallery';
-import { getProductPictures, removeProductImage } from '../../api/metadataApi'
+import { addProductPicture, getProductPictures, removeProductImage } from '../../api'
 
 class ImageManagement extends React.Component {
   constructor() {

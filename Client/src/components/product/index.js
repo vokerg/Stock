@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { getProduct, getProductRests } from '../../api/productApi';
-import { getProductPictures } from '../../api/metadataApi'
+import { getProduct, getProductRests, getProductPictures } from '../../api';
 import ProductView from './productView';
 import { getCurrentUser } from '../../reducers';
 import ProductTabs from './productTabs';

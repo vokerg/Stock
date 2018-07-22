@@ -15,7 +15,8 @@ const userData = (state={
   }
 }
 
-export const getCurrentUser = state => state.user;
-export const getAuthorizationToken = state => state.authorization;
+export const getCurrentUser = userData => userData.user;
+export const getCurrentUserId = userData => userData.user ? userData.user.id : null;
+export const getAuthorizationToken = userData => userData.authorization;
 
 export default userData;

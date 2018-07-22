@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 
-import { getProduct, insertProduct, updateProduct } from '../api/productApi';
+import { getProduct, insertProduct, updateProduct } from '../api';
 
 const styles = theme => ({
   root: theme.mixins.gutters({
@@ -20,29 +20,23 @@ const styles = theme => ({
 });
 
 class EditProduct extends React.Component {
-  constructor() {
-    super();
-    this.state={name: ""}
-  }
-
+  state={ name: "" };
   componentDidMount() {
-    const {id} = this.props.match.params;
-    if (id !== undefined) {
-      getProduct(id)(name => this.setState({...name}));
+    const { id } = this.props.match.params;
+    if (id) {
+      getProduct(id)(product => this.setState({ ...product }));
     }
   }
 
-  onNameChange = event => this.setState({name: event.target.value})
+  onNameChange = event => this.setState({ name: event.target.value });
   submitForm = event => {
     event.preventDefault();
     const {id} = this.props.match.params;
     const {name} = this.state;
     const {push} = this.props.history;
-    if (id === undefined) {
-      insertProduct({name})(product => push(`/products/${product.id}`))
-    } else {
-      updateProduct({id, name})(() => push(`/products/${id}`))
-    }
+    return id
+      ? updateProduct({ id, name })(() => push(`/products/${id}`))
+      : insertProduct({ name })(product => push(`/products/${product.id}`));
   }
 
   render() {

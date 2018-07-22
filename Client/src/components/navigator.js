@@ -40,17 +40,13 @@ const styles = theme => ({
 });
 
 class Navigator extends React.Component  {
-  constructor(props) {
-    super(props);
-    this.state={
-      anchorEl: null,
-      drawer: false
-    };
-  }
-
-  handleMenu = event => this.setState({anchorEl: event.currentTarget})
-  closeMenu = () => this.setState({anchorEl: null})
-  toggleDrawer = open => () => this.setState({drawer:open})
+  state={
+    anchorEl: null,
+    drawer: false
+  };
+  handleMenu = event => this.setState({ anchorEl: event.currentTarget })
+  closeMenu = () => this.setState({ anchorEl: null })
+  toggleDrawer = open => () => this.setState({ drawer:open })
   redirect = url => () => this.props.history.push(`/${url}`)
 
   logout = () => {
@@ -63,8 +59,8 @@ class Navigator extends React.Component  {
   }
 
   render() {
-    const {classes, user, drafts} = this.props;
-    const {anchorEl, drawer} = this.state;
+    const { classes, user, drafts } = this.props;
+    const { anchorEl, drawer } = this.state;
     const username = (user !== null && user.username !== '') ? user.username : null
     const open = Boolean(anchorEl);
     return (

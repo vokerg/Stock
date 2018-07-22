@@ -1,23 +1,20 @@
 import React from 'react';
-import { getStock, getStockRests } from '../../api/stockApi';
+import { getStock, getStockRests } from '../../api';
 import StockView from './stockView';
 import StockRests from './stockRest';
 import OrdersView from '../common/ordersView';
 import AccessDenied from '../common/accessDenied';
 
 class Stock extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      id: 0,
-      name: "",
-      stockRests: [],
-      unauthorized: false
-    };
-  }
+  state = {
+    id: 0,
+    name: "",
+    stockRests: [],
+    unauthorized: false
+  };
 
   componentDidMount() {
-    const {id} = this.props.match.params;
+    const { id } = this.props.match.params;
     getStock(id)(stock =>
       getStockRests(id)(stockRests =>
         this.setState({
@@ -26,11 +23,11 @@ class Stock extends React.Component {
         })
       )
     )
-    .catch(error => this.setState({unauthorized: true}));
+    .catch(error => this.setState({ unauthorized: true }));
   }
 
   render() {
-    const {id, name, stockRests} = this.state;
+    const { id, name, stockRests } = this.state;
     return (
       this.state.unauthorized ?
       <AccessDenied/>
