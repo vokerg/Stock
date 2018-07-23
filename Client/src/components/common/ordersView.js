@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
+import { Link } from 'react-router-dom';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -10,42 +11,32 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
 import { getAllOrders, getOrdersForDoc, getOrdersForStock, getOrdersForProduct } from '../../api';
-import AccessDenied from '../common/accessDenied';
+import { accessDenied } from '../../actions';
 
 class OrdersView extends React.Component {
-
-  constructor() {
-    super();
-    this.state = {
-      orders: [],
-      unauthorized: false
-    }
-  }
+  state = { orders: [] }
 
   componentDidMount() {
     let {match, documentId, stockId, productId} = this.props;
     stockId = (match !== undefined) ? match.params.stockId : (stockId !== undefined) ? stockId : undefined
+
+    const acceptOrders = orders => this.setState({ orders });
+    const errorRedirect = error => this.props.accessDenied();
+
     if (stockId !== undefined) {
-      getOrdersForStock(stockId)(orders => this.setState({orders}))
-      .catch(error => this.setState({unauthorized: true}));
+      getOrdersForStock(stockId)(acceptOrders).catch(errorRedirect);
     } else if (documentId !== undefined) {
-      getOrdersForDoc(documentId)(orders => this.setState({orders}))
-      .catch(error => this.setState({unauthorized: true}));
+      getOrdersForDoc(documentId)(acceptOrders).catch(errorRedirect);
     } else  if (productId !== undefined) {
-      getOrdersForProduct(productId)(orders => this.setState({orders}))
-      .catch(error => this.setState({unauthorized: true}));
+      getOrdersForProduct(productId)(acceptOrders).catch(errorRedirect);
     } else {
-      getAllOrders(orders => this.setState({orders}))
-      .catch(error => this.setState({unauthorized: true}));
+      getAllOrders(acceptOrders).catch(errorRedirect);
     }
   }
 
   render() {
     const { isShort } = this.props;
     return (
-      this.state.unauthorized ?
-      <AccessDenied/>
-      :
       <div>
         <Paper>
           <Table>
@@ -63,7 +54,7 @@ class OrdersView extends React.Component {
             <TableBody>
               {this.state.orders.map(order =>
                   <TableRow key={order.id}>
-                    <TableCell>{order.documentId}</TableCell>
+                    {(isShort===undefined) && <TableCell>{order.documentId}</TableCell>}
                     {(isShort===undefined) && <TableCell>{order.operationTypeName}</TableCell>}
                     <TableCell><Link to={`/products/${order.productId}`}>{order.productName}</Link></TableCell>
                     {(isShort===undefined) && <TableCell><Link to={`/stocks/${order.stockId}`}>{order.stocksName}</Link></TableCell>}
@@ -78,4 +69,8 @@ class OrdersView extends React.Component {
   }
 }
 
-export default OrdersView;
+const mapDispatchToProps = dispatch => ({
+  accessDenied: () => dispatch(accessDenied()),
+});
+
+export default connect(() => ({}), mapDispatchToProps)(OrdersView);

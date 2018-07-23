@@ -20,7 +20,6 @@ class EditDocument extends React.Component {
       transfer: false,
       orders:[this.getNewOrderLine()],
       stocks:[],
-      stocks2:[],
       draftDialogOpen:false,
       draftName:"",
       draftId:null
@@ -28,7 +27,7 @@ class EditDocument extends React.Component {
   }
 
   componentDidMount() {
-    getStocks(stocks => this.setState({stocks, stocks2:stocks}));
+    getStocks(stocks => this.setState({ stocks }));
     this.props.fetchProducts();
     getOperationTypes(operationTypes => this.setState({operationTypes}));
     const {draft} = this.props;
@@ -46,10 +45,7 @@ class EditDocument extends React.Component {
     }
   }
 
-  getNewOrderLine = () => ({
-    idProduct: "0",
-    qty:"0"
-  })
+  getNewOrderLine = () => ({ idProduct: "0", qty:"0" })
 
   addNewOrderLine = () => this.setState({
     orders: [...this.state.orders, this.getNewOrderLine()]
@@ -70,10 +66,7 @@ class EditDocument extends React.Component {
 
   orderLineInputChange = key => ({target: input}) => this.orderLineChange(input.name)(key)(input.value);
 
-  stockChange = ({target: input}) => {
-    console.log(input.name, input.value)
-    this.setState({ [input.name]: input.value });
-  }
+  stockChange = ({target: input}) => this.setState({ [input.name]: input.value });
 
   submitDocument = event => {
     event.preventDefault();
@@ -167,7 +160,7 @@ const mapStateToProps = (state, {match}) => ({
 const mapDispatchToProps = dispatch => ({
   saveDraftDocument: payload => dispatch(saveDraftDocument(payload)),
   clearDraft: draftId => dispatch(clearDraft(draftId)),
-  fetchProducts: () => dispatch(fetchProducts())
+  fetchProducts: () => dispatch(fetchProducts()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditDocument);

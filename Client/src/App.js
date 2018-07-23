@@ -4,7 +4,8 @@ import { Provider, connect } from 'react-redux';
 
 import './App.css';
 import Routes from './routes';
-import { stateLogin } from './actions';
+import { stateLogin, redirect, redirectToLogin } from './actions';
+import { getRedirectTo } from './reducers';
 import { getConfiguredStore } from './storeProvider';
 
 class App extends Component {
@@ -12,25 +13,43 @@ class App extends Component {
     super(props);
     const user = JSON.parse(localStorage.getItem('user'));
     const authorization = localStorage.getItem('authorization');
+    if (!user) {
+      props.redirectToLogin();
+      return;
+    }
     this.props.stateLogin(authorization, user);
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.redirectTo) {
+      nextProps.redirect();
+      this.props.history.push(nextProps.redirectTo)
+    }
+  }
+
   render() {
     return (
-      <BrowserRouter>
-        <Route path="/" component = {Routes} />
-      </BrowserRouter>
+      <Route path="/" component = {Routes} />
     )
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-    stateLogin: (authorization, user) => dispatch(stateLogin(authorization, user))
+const mapStateToProps = state => ({
+  redirectTo: getRedirectTo(state)
 })
 
-const AppWrapper = connect(() => ({}), mapDispatchToProps)(App);
+const mapDispatchToProps = dispatch => ({
+    stateLogin: (authorization, user) => dispatch(stateLogin(authorization, user)),
+    redirect: () => dispatch(redirect()),
+    redirectToLogin: () => dispatch(redirectToLogin()),
+})
+
+const AppWrapper = connect(mapStateToProps, mapDispatchToProps)(App);
 
 export default () => (
-  <Provider store={ getConfiguredStore() }>
-    <AppWrapper/>
-  </Provider>
+  <BrowserRouter>
+    <Provider store={ getConfiguredStore() }>
+      <Route path="/" component = {AppWrapper} />
+    </Provider>
+  </BrowserRouter>
 );

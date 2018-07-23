@@ -26,7 +26,7 @@ export const clearDraft = draftId => ({
 export const loadProducts = products => ({
   type: 'LOAD_PRODUCTS',
   payload: { products }
-})
+});
 
 export const visit = (textDescription, url) => ({
   type: 'ADD_VISIT',
@@ -35,7 +35,17 @@ export const visit = (textDescription, url) => ({
     textDescription,
     url
   }
-})
+});
+
+export const doRedirect = redirectTo => ({
+    type: 'DO_REDIRECT',
+    payload: { redirectTo }
+});
+
+export const accessDenied = () => doRedirect("accessdenied");
+export const redirectToLogin = () => doRedirect("login");
+
+export const redirect = () => ({ type: 'REDIRECT' });
 
 export const fetchProducts = () => dispatch =>
   getProducts(products => dispatch(loadProducts(products)));

@@ -14,6 +14,7 @@ import Product from './components/product';
 import EditDocument from './components/editDocument';
 import Documents from './components/documents';
 import ImageManagement from './components/product/imageManagement';
+import AccessDenied from './components/common/accessDenied';
 
 const Routes = ({history}) => {
   return (
@@ -36,6 +37,7 @@ const Routes = ({history}) => {
         <Route exact path="/newdocument" component= {EditDocument} />
         <Route exact path="/draftdocument/:draftId" component= {EditDocument} />
         <Route exact path="/products/:id/imagemanagement" component= {ImageManagement} />
+        <Route exact path="/accessdenied" component= {AccessDenied} />
       </div>
     </div>
   )
