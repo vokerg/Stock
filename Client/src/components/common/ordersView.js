@@ -17,7 +17,7 @@ class OrdersView extends React.Component {
   state = { orders: [] }
 
   componentDidMount() {
-    let {match, documentId, stockId, productId} = this.props;
+    let { match, documentId, stockId, productId } = this.props;
     stockId = (match !== undefined) ? match.params.stockId : (stockId !== undefined) ? stockId : undefined
 
     const acceptOrders = orders => this.setState({ orders });
@@ -35,7 +35,7 @@ class OrdersView extends React.Component {
   }
 
   render() {
-    const { isShort } = this.props;
+    const { isShort, children } = this.props;
     return (
       <div>
         <Paper>
@@ -52,6 +52,7 @@ class OrdersView extends React.Component {
             </TableHead>
           }
             <TableBody>
+              { children }
               {this.state.orders.map(order =>
                   <TableRow key={order.id}>
                     {(isShort===undefined) && <TableCell>{order.documentId}</TableCell>}
