@@ -38,7 +38,6 @@ public class StockRest {
 	public void setStock(Stock stock) {
 		this.stock = stock;
 	}
-	
 	public Long getId() {
 		return id;
 	}
