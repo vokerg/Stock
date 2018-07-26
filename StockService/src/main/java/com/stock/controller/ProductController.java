@@ -2,6 +2,7 @@ package com.stock.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,13 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.stock.entity.CategoryAttribute;
+import com.stock.entity.CategoryAttributeProduct;
 import com.stock.entity.Product;
 import com.stock.entity.SharedUser;
 import com.stock.entity.StockRest;
+import com.stock.repository.CategoryAttributeProductRepository;
+import com.stock.repository.CategoryAttributeRepository;
 import com.stock.repository.ProductRepository;
 import com.stock.repository.StockRestRepository;
 import com.stock.service.UserService;
@@ -41,6 +46,12 @@ public class ProductController {
 
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	CategoryAttributeRepository categoryAttributeRepository;
+	
+	@Autowired
+	CategoryAttributeProductRepository categoryAttributeProductRepository;
 
 	@GetMapping("")
 	public List<Product> getAll() {
@@ -87,6 +98,26 @@ public class ProductController {
 			return ResponseEntity.ok(null);
 		}
 		return ResponseEntity.badRequest().body(null);
+	}
+	
+	@PostMapping("/{id}/attributes")
+	public ResponseEntity<?> updateProductAttributes(@PathVariable String id, @RequestBody List<String> attributesIds) {
+		Product product = productRepository.findById(Long.valueOf(id));
+		List<CategoryAttributeProduct> productAttributes = categoryAttributeProductRepository.findByProduct(product);
+		Map<Long, CategoryAttributeProduct> attributesMap = productAttributes.stream().collect(Collectors.toMap(element -> element.getId(), element -> element));
+		attributesIds.stream().forEach(attributeId -> {
+			Long idLong = Long.valueOf(attributeId);
+			if (!attributesMap.containsKey(idLong)) {
+				CategoryAttribute attr = categoryAttributeRepository.findOne(idLong);
+				if (attr != null) {
+					CategoryAttributeProduct attrProduct = new CategoryAttributeProduct();
+					attrProduct.setCategoryAttribute(attr);
+					attrProduct.setProduct(product);
+					categoryAttributeProductRepository.save(attrProduct);
+				}
+			}
+		});
+		return ResponseEntity.ok(null);
 	}
 
 	@GetMapping("/{id}/orders")
