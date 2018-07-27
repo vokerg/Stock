@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,6 +102,7 @@ public class ProductController {
 		return ResponseEntity.badRequest().body(null);
 	}
 	
+	@Transactional
 	@PostMapping("/{id}/attributes")
 	public ResponseEntity<?> updateProductAttributes(@PathVariable String id, @RequestBody List<String> attributesIds) {
 		Product product = productRepository.findById(Long.valueOf(id));
