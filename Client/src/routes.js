@@ -15,6 +15,7 @@ import EditDocument from './components/editDocument';
 import Documents from './components/documents';
 import ImageManagement from './components/product/imageManagement';
 import AccessDenied from './components/common/accessDenied';
+import Categories from './components/categories';
 
 const Routes = ({history}) => {
   return (
@@ -38,6 +39,7 @@ const Routes = ({history}) => {
         <Route exact path="/draftdocument/:draftId" component= {EditDocument} />
         <Route exact path="/products/:id/imagemanagement" component= {ImageManagement} />
         <Route exact path="/accessdenied" component= {AccessDenied} />
+        <Route exact path="/categories" component= {Categories} />
       </div>
     </div>
   )

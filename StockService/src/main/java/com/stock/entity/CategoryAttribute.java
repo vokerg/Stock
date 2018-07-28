@@ -1,6 +1,7 @@
 package com.stock.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,7 +14,7 @@ public class CategoryAttribute {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="category_id")
 	private Category category;
 	
@@ -28,9 +29,6 @@ public class CategoryAttribute {
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public Category getCategory() {
-		return category;
 	}
 	public void setCategory(Category category) {
 		this.category = category;

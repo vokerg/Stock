@@ -106,6 +106,12 @@ public class ProductController {
 		return ResponseEntity.badRequest().body(null);
 	}
 	
+	@GetMapping("/{id}/attributes")
+	public List<CategoryAttributeProduct> getProductAttributes(@PathVariable String id) {
+		Product product = productRepository.findById(Long.valueOf(id));
+		return categoryAttributeProductRepository.findByProduct(product);
+	}
+	
 	@Transactional
 	@PostMapping("/{id}/attributes")
 	public ResponseEntity<?> updateProductAttributes(@PathVariable String id, @RequestBody List<String> attributesIds) {

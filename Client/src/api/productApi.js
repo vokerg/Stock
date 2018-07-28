@@ -28,14 +28,26 @@ export const insertProduct = product => next =>
   .then(response => response.json())
   .then(product => next(product));
 
-  export const updateProduct = product => next =>
-    fetch(`/stock/products/${product.id}`, {
-        method: 'post',
-        body: JSON.stringify(product),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          ...authorization()
-        }
-    })
-    .then(response => next(response));
+export const updateProduct = product => next =>
+  fetch(`/stock/products/${product.id}`, {
+      method: 'post',
+      body: JSON.stringify(product),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        ...authorization()
+      }
+  })
+  .then(response => next(response));
+
+export const getCategories = next =>
+  fetch(`/stock/categories`, {
+    method: 'get',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      ...authorization()
+    }
+  })
+  .then(response => response.json())
+  .then(categories => next(categories));
