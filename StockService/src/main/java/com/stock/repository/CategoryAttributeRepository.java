@@ -9,4 +9,5 @@ import com.stock.entity.CategoryAttribute;
 
 public interface CategoryAttributeRepository extends JpaRepository<CategoryAttribute, Long>{
 	List<CategoryAttribute> findByCategory(Category category);
+	List<CategoryAttribute> findByCategoryId(Long categoryId);
 }

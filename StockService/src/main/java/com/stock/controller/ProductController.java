@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -54,7 +55,10 @@ public class ProductController {
 	
 	@Autowired
 	CategoryAttributeProductRepository categoryAttributeProductRepository;
-
+	
+	@Autowired
+	CategoryAttributeProductRepository catAttrProdRepository;
+	
 	@GetMapping("")
 	public List<Product> getAll() {
 		return productRepository.findAll();
@@ -106,6 +110,9 @@ public class ProductController {
 	@PostMapping("/{id}/attributes")
 	public ResponseEntity<?> updateProductAttributes(@PathVariable String id, @RequestBody List<String> attributesIds) {
 		Product product = productRepository.findById(Long.valueOf(id));
+		if (product == null) {
+			return ResponseEntity.badRequest().body(null);
+		}
 		List<CategoryAttributeProduct> productAttributes = categoryAttributeProductRepository.findByProduct(product);
 		Map<Long, CategoryAttributeProduct> attributesMap = productAttributes.stream().collect(Collectors.toMap(element -> element.getId(), element -> element));
 		attributesIds.stream().forEach(attributeId -> {
@@ -121,6 +128,13 @@ public class ProductController {
 			}
 		});
 		return ResponseEntity.ok(null);
+	}
+	
+	@GetMapping("/attributes")
+	public List<Product> getAllProductsForAttributes(@RequestParam List<String> ids) {
+		List<Long> longIds = ids.stream().map(id -> Long.valueOf(id)).collect(Collectors.toList());
+		List<Long>productIds = catAttrProdRepository.findProductIdsByInclAttributeList(longIds, Long.valueOf(longIds.size()));
+		return productIds.stream().map(id -> productRepository.findById(id)).collect(Collectors.toList());
 	}
 
 	@GetMapping("/{id}/orders")
