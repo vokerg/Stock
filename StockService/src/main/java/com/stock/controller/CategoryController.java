@@ -50,7 +50,7 @@ public class CategoryController {
 	
 	@PutMapping("/{id}/attributes")
 	public ResponseEntity<?> insertAttribute (@PathVariable String id, @RequestBody CategoryAttribute attribute) {
-		Category category = categoryRepository.findOne(Long.valueOf(id));
+		Category category = categoryRepository.findById(Long.valueOf(id)).orElse(null);
 		if (category == null) {
 			return ResponseEntity.badRequest().body(null);
 		}

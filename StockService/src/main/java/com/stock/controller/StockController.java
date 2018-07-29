@@ -64,7 +64,7 @@ public class StockController {
 	public ResponseEntity<Stock> getStock(@RequestHeader(value = "idUser", required = false) String idUser,
 			@PathVariable String id) throws JsonParseException, JsonMappingException, IOException {
 		return userService.isAllowedToSeeStock(idUser, id)
-				? ResponseEntity.ok(this.stockRepository.findById(Long.valueOf(id)))
+				? ResponseEntity.ok(this.stockRepository.findById(Long.valueOf(id)).orElse(null))
 				: ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 
 	}
@@ -75,14 +75,14 @@ public class StockController {
 			throws JsonParseException, JsonMappingException, NumberFormatException, IOException {
 		return userService.isAllowedToSeeStock(idUser, id)
 				? ResponseEntity
-						.ok(this.stockRestRepository.findByStockExcludeEmpty(this.stockRepository.findById(Long.valueOf(id))))
+						.ok(this.stockRestRepository.findByStockExcludeEmpty(this.stockRepository.findById(Long.valueOf(id)).orElse(null)))
 				: ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 	}
 	
 	@GetMapping("/{id}/stockrest/{productId}")
 	public ResponseEntity<Float> getStockRestForProduct(@PathVariable String id, @PathVariable String productId) {
-		Stock stock = this.stockRepository.findById(Long.valueOf(id));
-		Product product = this.productRepository.findById(Long.valueOf(productId));
+		Stock stock = this.stockRepository.findById(Long.valueOf(id)).orElse(null);
+		Product product = this.productRepository.findById(Long.valueOf(productId)).orElse(null);
 		if (stock == null || product == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}

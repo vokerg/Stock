@@ -66,7 +66,7 @@ public class ProductController {
 
 	@GetMapping("/{id}")
 	public Product getProduct(@PathVariable String id) {
-		return this.productRepository.findById(Long.valueOf(id));
+		return this.productRepository.findById(Long.valueOf(id)).orElse(null);
 	}
 
 	@GetMapping("/{id}/productrest")
@@ -74,12 +74,12 @@ public class ProductController {
 			@PathVariable String id) throws JsonParseException, JsonMappingException, IOException {
 		if (idUser != null) {
 			SharedUser user = userService.getSharedUser(idUser);
-			Product product = productRepository.findById(Long.valueOf(id));
+			Product product = productRepository.findById(Long.valueOf(id)).orElse(null);
 			return user.isAdmin() 
 					? stockRestRepository.findByProduct(product) 
 					: stockRestRepository.findByProductAndStockIdIn(product, user.getViewstocks().stream().map(stockId -> Long.valueOf(stockId)).collect(Collectors.toList()));
 		}
-		return stockRestRepository.findByProduct(productRepository.findById(Long.valueOf(id)));
+		return stockRestRepository.findByProduct(productRepository.findById(Long.valueOf(id)).orElse(null));
 	}
 
 	@PutMapping("")
@@ -108,14 +108,14 @@ public class ProductController {
 	
 	@GetMapping("/{id}/attributes")
 	public List<CategoryAttributeProduct> getProductAttributes(@PathVariable String id) {
-		Product product = productRepository.findById(Long.valueOf(id));
+		Product product = productRepository.findById(Long.valueOf(id)).orElse(null);
 		return categoryAttributeProductRepository.findByProduct(product);
 	}
 	
 	@Transactional
 	@PostMapping("/{id}/attributes")
 	public ResponseEntity<?> updateProductAttributes(@PathVariable String id, @RequestBody List<String> attributesIds) {
-		Product product = productRepository.findById(Long.valueOf(id));
+		Product product = productRepository.findById(Long.valueOf(id)).orElse(null);
 		if (product == null) {
 			return ResponseEntity.badRequest().body(null);
 		}
@@ -124,7 +124,7 @@ public class ProductController {
 		attributesIds.stream().forEach(attributeId -> {
 			Long idLong = Long.valueOf(attributeId);
 			if (!attributesMap.containsKey(idLong)) {
-				CategoryAttribute attr = categoryAttributeRepository.findOne(idLong);
+				CategoryAttribute attr = categoryAttributeRepository.findById(idLong).orElse(null);
 				if (attr != null) {
 					CategoryAttributeProduct attrProduct = new CategoryAttributeProduct();
 					attrProduct.setCategoryAttribute(attr);
@@ -140,7 +140,7 @@ public class ProductController {
 	public List<Product> getAllProductsForAttributes(@RequestParam List<String> ids) {
 		List<Long> longIds = ids.stream().map(id -> Long.valueOf(id)).collect(Collectors.toList());
 		List<Long>productIds = catAttrProdRepository.findProductIdsByInclAttributeList(longIds, Long.valueOf(longIds.size()));
-		return productIds.stream().map(id -> productRepository.findById(id)).collect(Collectors.toList());
+		return productIds.stream().map(id -> productRepository.findById(id).orElse(null)).collect(Collectors.toList());
 	}
 
 	@GetMapping("/{id}/orders")
