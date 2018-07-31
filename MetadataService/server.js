@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const Eureka = require('eureka-js-client').Eureka;
 const multer  = require('multer');
@@ -19,7 +21,7 @@ const client = new Eureka({
     hostName: 'localhost',
     ipAddr: '127.0.0.1',
     port: {
-      '$': 8085,
+      '$': process.env.PORT,
       '@enabled': 'true',
     },
     vipAddress: 'stock-metadata',
@@ -29,8 +31,8 @@ const client = new Eureka({
     },
   },
   eureka: {
-    host: 'admin:admin@localhost',
-    port: 8761,
+    host: process.env.EUREKA_HOST,
+    port: process.env.EUREKA_PORT,
     servicePath: '/eureka/apps/'
   },
 });
@@ -90,10 +92,10 @@ app.delete('/images/product/:productId/:pictureId', (req, res) => {
   return res.send(null);
 });
 
-const port = 8085;
+const port = process.env.PORT;
 app.listen(port, () => {
   client.start(error => console.log("connected to eureka ", error));
-  const db = "mongodb://stockuser:stockpassword@ds151259.mlab.com:51259/stockdb";
+  const db = process.env.MONGO_CONNECTION_STRING;
   MongoClient.connect(db, (err, database) => {
     console.log("connected to db", err);
     stockDb = database.db('stockdb');
